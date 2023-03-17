@@ -5,13 +5,13 @@
 [worldserver]
 
 ########################################
-# My module configuration
+# FLRifts configuration
 ########################################
 #
-#    MyModule.Enable
+#    FLRifts.Enable
 #        Description: Enable my module and print "Hello World" message at server start
 #        Default:     0 - Disabled
 #                     1 - Enabled
 #
 
-MyModule.Enable = 0
+FLRifts.Enable = 0
