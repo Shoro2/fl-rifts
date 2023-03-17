@@ -8,7 +8,7 @@
 #include "Chat.h"
 #include "ScriptedAI/ScriptedCreature.h"
 
-bool eventActive = false , riftSpawned = false;
+bool eventActive = false, riftSpawned = false;
 uint32 creepsAlive = 0;
 uint8 waveNumber = 0;
 std::list<Creature*> creatureList = {};
@@ -26,7 +26,7 @@ void FLR_clear() {
     std::list<Creature*>::iterator it;
     for (it = creatureList.begin(); it != creatureList.end(); it++)
     {
-        
+
     }
 }
 
@@ -81,7 +81,7 @@ public:
 
             sObjectMgr->AddCreatureToGrid(12000, data);
         }
-        
+
     }
 
     void OnStop(uint16 EventID) override {
@@ -115,15 +115,15 @@ public:
                 switch (waveNumber) {
                 case 0:
                     //start spawning
-                    uint32 myX, myY, myZ, myO;
+
 
 
 
                     if (creepsAlive == 0) {
                         for (size_t i = 0; i < 10; i++)
                         {
-                            
-                            creatureList.push_front(me->SummonCreature(RAND(1, 2, 3, 4, 5, 6, 7, 8, 9), myX, myY, myZ, myO, TEMPSUMMON_TIMED_DESPAWN, 600));
+
+                            creatureList.push_front(me->SummonCreature(80010, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN));
                             creepsAlive++;
                         }
                         me->m_Events.AddEvent(new DelayedWaveSpawn(), me->m_Events.CalculateTime(120000));
@@ -133,7 +133,7 @@ public:
                     if (creepsAlive == 0) {
                         for (size_t i = 0; i < 10; i++)
                         {
-                            creatureList.push_front(me->SummonCreature(RAND(1, 2, 3, 4, 5, 6, 7, 8, 9), myX, myY, myZ, myO, TEMPSUMMON_TIMED_DESPAWN, 600));
+                            creatureList.push_front(me->SummonCreature(80010, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN));
                             creepsAlive++;
                         }
                         me->m_Events.AddEvent(new DelayedWaveSpawn(), me->m_Events.CalculateTime(120000));
@@ -143,7 +143,7 @@ public:
                     if (creepsAlive == 0) {
                         for (size_t i = 0; i < 10; i++)
                         {
-                            creatureList.push_front(me->SummonCreature(RAND(1, 2, 3, 4, 5, 6, 7, 8, 9), myX, myY, myZ, myO, TEMPSUMMON_TIMED_DESPAWN, 600));
+                            creatureList.push_front(me->SummonCreature(80010, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN));
                             creepsAlive++;
                         }
                         me->m_Events.AddEvent(new DelayedWaveSpawn(), me->m_Events.CalculateTime(120000));
@@ -155,7 +155,7 @@ public:
                         eventActive = false;
                         FLR_clear();
                     }
-                    
+
                     break;
                 default:
                     break;
@@ -193,7 +193,7 @@ public:
         void JustDied(Unit* /*killer*/) override {
             creepsAlive--;
         }
-    
+
     private:
         // Declare variables here
 
