@@ -1,0 +1,1 @@
+INSERT INTO `update_world`.`game_event` (`eventEntry`, `start_time`, `end_time`, `occurence`, `length`, `holiday`, `holidayStage`, `description`, `world_event`, `announce`) VALUES ('120', '2000-01-01 13:00:00', '2030-01-01 13:00:00', '60', '45', '0', '0', 'FLRifts', '0', '1');
