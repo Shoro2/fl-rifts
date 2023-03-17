@@ -28,6 +28,9 @@ void FLR_clear() {
     {
 
     }
+
+
+
 }
 
 
@@ -44,10 +47,24 @@ public:
     }
 
 private:
-    TempSummon* _summon;
-    ObjectGuid _playerGUID;
+
 };
 
+class DelayedRiftSpawn : public BasicEvent
+{
+public:
+    DelayedRiftSpawn() : BasicEvent() { }
+
+    bool Execute(uint64 /*eventTime*/, uint32 /*updateTime*/) override
+    {
+        waveNumber=0;
+        sWorld->SendWorldText(LANG_EVENTMESSAGE, "spawning new rift");
+        return true;
+    }
+
+private:
+
+};
 
 // Add player scripts
 class FLRiftsPlayer : public PlayerScript
@@ -110,52 +127,53 @@ public:
         }
 
 
-        void UpdateAI(uint32 diff) {
+        void UpdateAI(uint32 /*diff*/) {
             if (eventActive) {
                 switch (waveNumber) {
                 case 0:
                     //start spawning
-
-
-
-
                     if (creepsAlive == 0) {
+                        sWorld->SendWorldText(LANG_EVENTMESSAGE, "Spawning Wave 1");
                         for (size_t i = 0; i < 10; i++)
                         {
 
                             creatureList.push_front(me->SummonCreature(80010, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN));
                             creepsAlive++;
                         }
-                        me->m_Events.AddEvent(new DelayedWaveSpawn(), me->m_Events.CalculateTime(120000));
+                        me->m_Events.AddEvent(new DelayedWaveSpawn(), me->m_Events.CalculateTime(60000));
                     }
                     break;
                 case 1:
                     if (creepsAlive == 0) {
+                        sWorld->SendWorldText(LANG_EVENTMESSAGE, "Spawning Wave 2");
                         for (size_t i = 0; i < 10; i++)
                         {
                             creatureList.push_front(me->SummonCreature(80010, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN));
                             creepsAlive++;
                         }
-                        me->m_Events.AddEvent(new DelayedWaveSpawn(), me->m_Events.CalculateTime(120000));
+                        me->m_Events.AddEvent(new DelayedWaveSpawn(), me->m_Events.CalculateTime(60000));
                     }
                     break;
                 case 2:
                     if (creepsAlive == 0) {
+                        sWorld->SendWorldText(LANG_EVENTMESSAGE, "Spawning Wave 3");
                         for (size_t i = 0; i < 10; i++)
                         {
                             creatureList.push_front(me->SummonCreature(80010, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN));
                             creepsAlive++;
                         }
-                        me->m_Events.AddEvent(new DelayedWaveSpawn(), me->m_Events.CalculateTime(120000));
+                        me->m_Events.AddEvent(new DelayedWaveSpawn(), me->m_Events.CalculateTime(60000));
                     }
                     break;
                 case 3:
                     //end event
+                    sWorld->SendWorldText(LANG_EVENTMESSAGE, "ending event");
                     if (creepsAlive == 0) {
                         eventActive = false;
                         FLR_clear();
+                        me->m_Events.AddEvent(new DelayedRiftSpawn(), me->m_Events.CalculateTime(120000));
                     }
-
+                    
                     break;
                 default:
                     break;
@@ -192,6 +210,7 @@ public:
 
         void JustDied(Unit* /*killer*/) override {
             creepsAlive--;
+            sWorld->SendWorldText(LANG_EVENTMESSAGE, "creep killed");
         }
 
     private:
@@ -223,6 +242,8 @@ public:
             if (waveNumber == 0 && creepsAlive == 0 && !riftSpawned) {
                 // create rift
                 riftCreature = me->SummonCreature(90017, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
+                FLR_init();
+                sWorld->SendWorldText(LANG_EVENTMESSAGE, "spawned new rift");
                 riftSpawned = true;
             }
             else if (waveNumber == 3 && creepsAlive == 0 && riftSpawned) {
