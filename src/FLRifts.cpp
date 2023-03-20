@@ -27,17 +27,6 @@ void FLR_init() {
     sWorld->SendWorldText(LANG_EVENTMESSAGE, "init");
 }
 
-void FLR_clear() {
-    // clear everything
-    std::list<TempSummon*>::iterator it;
-    for (it = creatureList.begin(); it != creatureList.end(); it++)
-    {
-        TempSummon* currentCreature = *it;
-        currentCreature->DespawnOrUnsummon(0);
-    }
-}
-
-
 
 class DelayedWaveSpawn : public BasicEvent
 {
@@ -124,7 +113,7 @@ public:
                 case 1: // wait
                     if (creepsAlive == 0 && waiting == false) {
                         sWorld->SendWorldText(LANG_EVENTMESSAGE, "Waiting for Wave 2"); 
-                        me->m_Events.AddEvent(new DelayedWaveSpawn(), me->m_Events.CalculateTime(60000));
+                        me->m_Events.AddEvent(new DelayedWaveSpawn(), me->m_Events.CalculateTime(10000));
                         waiting = true;
                     }
                     break;
@@ -146,7 +135,7 @@ public:
                 case 3: //wait
                     if (creepsAlive == 0 && waiting == false) {
                         sWorld->SendWorldText(LANG_EVENTMESSAGE, "Waiting for Wave 3");
-                        me->m_Events.AddEvent(new DelayedWaveSpawn(), me->m_Events.CalculateTime(60000));
+                        me->m_Events.AddEvent(new DelayedWaveSpawn(), me->m_Events.CalculateTime(10000));
                         waiting = true;
                     }
                     break;
@@ -171,8 +160,7 @@ public:
                     if (creepsAlive == 0) {
                         sWorld->SendWorldText(LANG_EVENTMESSAGE, "Finished Event, respawning Rift in 120 seconds.");
                         eventActive = false;
-                        FLR_clear();
-                        me->m_Events.AddEvent(new DelayedRiftSpawn(), me->m_Events.CalculateTime(120000));
+                        me->m_Events.AddEvent(new DelayedRiftSpawn(), me->m_Events.CalculateTime(20000));
                         waveNumber++;
                     }
                     
@@ -246,6 +234,7 @@ public:
                     // create rift
                     QueryResult qr = WorldDatabase.Query("SELECT guid FROM creature WHERE id1 = 90018 ORDER BY RAND() LIMIT 1");
                     uint32 targetGUID = (*qr)[0].Get<uint32>();
+                    //727
                     Creature* targetSummoner = ObjectAccessor::GetSpawnedCreatureByDBGUID(13, targetGUID);
 
                     riftCreature = targetSummoner->SummonCreature(90017, targetSummoner->GetPositionX(), targetSummoner->GetPositionY(), targetSummoner->GetPositionZ(), targetSummoner->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
