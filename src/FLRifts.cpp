@@ -33,7 +33,7 @@ class DelayedWaveSpawn : public BasicEvent
 public:
     DelayedWaveSpawn() : BasicEvent() { }
 
-    bool Execute(uint64 /*eventTime*/, uint32 /*updateTime*/) override
+    bool Execute(uint64 /*eventTime*/, uint32 /*updateTime*/) 
     {
         waveNumber++;
         waiting = false;
@@ -50,7 +50,7 @@ class DelayedRiftSpawn : public BasicEvent
 public:
     DelayedRiftSpawn() : BasicEvent() { }
 
-    bool Execute(uint64 /*eventTime*/, uint32 /*updateTime*/) override
+    bool Execute(uint64 /*eventTime*/, uint32 /*updateTime*/) 
     {
         waveNumber = 0;
         eventActive = true;
