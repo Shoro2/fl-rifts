@@ -124,7 +124,7 @@ public:
                     break;
                 case 1: // wait
                     if (creepsAlive == 0 && waiting == false) {
-                        sWorld->SendWorldText(LANG_EVENTMESSAGE, "Waiting for Wave 2");
+                        sWorld->SendWorldText(LANG_EVENTMESSAGE, "Waiting for Wave 2"); 
                         me->m_Events.AddEvent(new DelayedWaveSpawn(), me->m_Events.CalculateTime(60000));
                         waiting = true;
                     }
@@ -245,14 +245,11 @@ public:
             if (sConfigMgr->GetOption<bool>("FLRifts.Enable", false)) {
                 if (waveNumber == 0 && creepsAlive == 0 && !riftSpawned) {
                     // create rift
-                    std::list<TempSummon*>::iterator it;
-                    for (it = creatureList.begin(); it != creatureList.end(); it++)
-                    {
-                        TempSummon* currentCreature = *it;
-                        currentCreature->DespawnOrUnsummon(0);
-                    }
 
                     uint32 myGUID = me->GetGUID().GetRawValue();
+                    sWorld->SendWorldText(LANG_EVENTMESSAGE, "try to spawn:");
+                    sWorld->SendWorldText(LANG_EVENTMESSAGE, myGUID);
+                    sWorld->SendWorldText(LANG_EVENTMESSAGE, riftNumber);
 
                     if (myGUID == 3114138 && riftNumber == 0) {
                         riftCreature = me->SummonCreature(90017, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
