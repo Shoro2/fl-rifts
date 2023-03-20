@@ -8,7 +8,7 @@
 #include "Chat.h"
 #include "ScriptedAI/ScriptedCreature.h"
 
-bool eventActive = false, riftSpawned = false;
+bool eventActive = false, riftSpawned = false, waiting = false;
 uint32 creepsAlive = 0;
 uint8 waveNumber = 0;
 std::list<Creature*> creatureList = {};
@@ -43,6 +43,8 @@ public:
     bool Execute(uint64 /*eventTime*/, uint32 /*updateTime*/) override
     {
         waveNumber++;
+        waiting = false;
+        sWorld->SendWorldText(LANG_EVENTMESSAGE, "done waiting");
         return true;
     }
 
@@ -58,7 +60,6 @@ public:
     bool Execute(uint64 /*eventTime*/, uint32 /*updateTime*/) override
     {
         waveNumber=0;
-        sWorld->SendWorldText(LANG_EVENTMESSAGE, "spawning new rift");
         return true;
     }
 
@@ -81,39 +82,6 @@ public:
     }
 };
 
-class FLRiftsGameEvent : public GameEventScript
-{
-public:
-    FLRiftsGameEvent() : GameEventScript("FLRiftsGameEvent") { }
-
-    void OnStart(uint16 EventID) override {
-        if (EventID == 120) {
-            eventActive = true;
-            FLR_init();
-            sWorld->SendWorldText(LANG_EVENTMESSAGE, "Starting Rift Event.");
-
-
-
-            CreatureData const* data = sObjectMgr->GetCreatureData(12000);
-
-            sObjectMgr->AddCreatureToGrid(12000, data);
-        }
-
-    }
-
-    void OnStop(uint16 EventID) override {
-        if (EventID == 120) {
-            eventActive = false;
-            FLR_clear();
-            sWorld->SendWorldText(LANG_EVENTMESSAGE, "Rift Event has ended.");
-
-
-        }
-    }
-
-
-};
-
 class FLRiftsCreatureRift : public CreatureScript
 {
 public:
@@ -128,7 +96,7 @@ public:
 
 
         void UpdateAI(uint32 /*diff*/) {
-            if (eventActive) {
+            if (sConfigMgr->GetOption<bool>("FLRifts.Enable", false)) {
                 switch (waveNumber) {
                 case 0:
                     //start spawning
@@ -140,10 +108,17 @@ public:
                             creatureList.push_front(me->SummonCreature(80010, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN));
                             creepsAlive++;
                         }
-                        me->m_Events.AddEvent(new DelayedWaveSpawn(), me->m_Events.CalculateTime(60000));
+                        waveNumber++;
                     }
                     break;
-                case 1:
+                case 1: // wait
+                    if (creepsAlive == 0 && waiting == false) {
+                        sWorld->SendWorldText(LANG_EVENTMESSAGE, "Waiting for Wave 2");
+                        me->m_Events.AddEvent(new DelayedWaveSpawn(), me->m_Events.CalculateTime(60000));
+                        waiting = true;
+                    }
+                    break;
+                case 2:
                     if (creepsAlive == 0) {
                         sWorld->SendWorldText(LANG_EVENTMESSAGE, "Spawning Wave 2");
                         for (size_t i = 0; i < 10; i++)
@@ -151,10 +126,17 @@ public:
                             creatureList.push_front(me->SummonCreature(80010, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN));
                             creepsAlive++;
                         }
-                        me->m_Events.AddEvent(new DelayedWaveSpawn(), me->m_Events.CalculateTime(60000));
+                        waveNumber++;
                     }
                     break;
-                case 2:
+                case 3: //wait
+                    if (creepsAlive == 0 && waiting == false) {
+                        sWorld->SendWorldText(LANG_EVENTMESSAGE, "Waiting for Wave 3");
+                        me->m_Events.AddEvent(new DelayedWaveSpawn(), me->m_Events.CalculateTime(60000));
+                        waiting = true;
+                    }
+                    break;
+                case 4:
                     if (creepsAlive == 0) {
                         sWorld->SendWorldText(LANG_EVENTMESSAGE, "Spawning Wave 3");
                         for (size_t i = 0; i < 10; i++)
@@ -162,13 +144,14 @@ public:
                             creatureList.push_front(me->SummonCreature(80010, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN));
                             creepsAlive++;
                         }
-                        me->m_Events.AddEvent(new DelayedWaveSpawn(), me->m_Events.CalculateTime(60000));
+                        waveNumber++;
                     }
                     break;
-                case 3:
+                case 5:
                     //end event
-                    sWorld->SendWorldText(LANG_EVENTMESSAGE, "ending event");
+                    
                     if (creepsAlive == 0) {
+                        sWorld->SendWorldText(LANG_EVENTMESSAGE, "Finished Event");
                         eventActive = false;
                         FLR_clear();
                         me->m_Events.AddEvent(new DelayedRiftSpawn(), me->m_Events.CalculateTime(120000));
@@ -239,19 +222,22 @@ public:
 
 
         void UpdateAI(uint32 /*diff*/) override {
-            if (waveNumber == 0 && creepsAlive == 0 && !riftSpawned) {
-                // create rift
-                riftCreature = me->SummonCreature(90017, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
-                FLR_init();
-                sWorld->SendWorldText(LANG_EVENTMESSAGE, "spawned new rift");
-                riftSpawned = true;
+            if (sConfigMgr->GetOption<bool>("FLRifts.Enable", false)) {
+                if (waveNumber == 0 && creepsAlive == 0 && !riftSpawned) {
+                    // create rift
+                    riftCreature = me->SummonCreature(90017, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
+                    FLR_init();
+                    sWorld->SendWorldText(LANG_EVENTMESSAGE, "spawned new rift");
+                    riftSpawned = true;
+                }
+                else if (waveNumber == 5 && creepsAlive == 0 && riftSpawned) {
+                    //clean rift
+                    riftCreature->DespawnOrUnsummon(0);
+                    riftSpawned = false;
+                    // todo loot
+                }
             }
-            else if (waveNumber == 3 && creepsAlive == 0 && riftSpawned) {
-                //clean rift
-                riftCreature->DespawnOrUnsummon(0);
-                riftSpawned = false;
-                // todo loot
-            }
+            
         }
 
     private:
@@ -270,8 +256,6 @@ public:
 void AddFLRiftsScripts()
 {
     new FLRiftsPlayer();
-
-    new FLRiftsGameEvent();
 
     new FLRiftsCreatureRift();
     new FLRiftsCreatureTrash();
