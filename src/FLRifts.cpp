@@ -52,8 +52,9 @@ public:
 
     bool Execute(uint64 /*eventTime*/, uint32 /*updateTime*/) override
     {
-        waveNumber=0;
+        waveNumber = 0;
         eventActive = true;
+        sWorld->SendWorldText(LANG_EVENTMESSAGE, "Rift Delay");
         return true;
     }
 
@@ -243,6 +244,7 @@ public:
                 }
                 else if (waveNumber == 6 && creepsAlive == 0 && riftSpawned) {
                     //clean rift
+                    sWorld->SendWorldText(LANG_EVENTMESSAGE, "Despawn Rift");
                     riftCreature->DespawnOrUnsummon(0);
                     riftSpawned = false;
                     // todo loot
