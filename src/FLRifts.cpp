@@ -248,13 +248,14 @@ public:
                     
                     QueryResult qr = WorldDatabase.Query("SELECT guid FROM creature WHERE id1 = 90018 ORDER BY RAND() LIMIT 1");
                     uint32 targetGUID = (*qr)[0].Get<uint32>();
+                    
                     uint32 myGUID = me->GetGUID().GetRawValue();
-                    uint32 myGUID2 = me->GetGUID().GetEntry();
+                    uint32 myGUID2 = me->GetGUID().GetCounter();
 
                     //Creature* targetSummoner = ObjectAccessor::GetCreature(*me, targetGUID);
                     std::ostringstream ss;
                     ss << "Try spwan: myGUID: " << myGUID << ", targetGUID: " << targetGUID << ", myGUID2: " << myGUID2;
-                    sWorld->SendWorldText(LANG_EVENTMESSAGE, ss.str().c_str());
+                    //sWorld->SendWorldText(LANG_EVENTMESSAGE, ss.str().c_str());
 
                     if (myGUID == targetGUID) {
                         riftCreature = me->SummonCreature(90017, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
