@@ -14,13 +14,18 @@ uint32 creepsAlive = 0;
 uint8 waveNumber = 0;
 std::list<TempSummon*> creatureList = {};
 Creature* riftCreature;
+uint32 riftNumber = rand() % 4;
+
 
 void FLR_init() {
     //reset stuff
     creepsAlive = 0;
     waveNumber = 0;
     creatureList = {};
-    sWorld->SendWorldText(LANG_EVENTMESSAGE, "done waiting");
+    eventActive = true;
+    riftSpawned = true;
+    riftNumber = rand() % 4;
+    sWorld->SendWorldText(LANG_EVENTMESSAGE, "init");
 }
 
 void FLR_clear() {
@@ -107,7 +112,7 @@ public:
                         sWorld->SendWorldText(LANG_EVENTMESSAGE, "Spawning Wave 1");
                         for (size_t i = 0; i < 10; i++)
                         {
-                            posX = me->GetPositionX()+(rand() %10 - 5);
+                            posX = me->GetPositionX() + (rand() % 10 - 5);
                             posY = me->GetPositionY() + (rand() % 10 - 5);
                             posZ = me->GetPositionZ() + (rand() % 10 - 5);
                             posO = me->GetOrientation();
@@ -240,10 +245,33 @@ public:
             if (sConfigMgr->GetOption<bool>("FLRifts.Enable", false)) {
                 if (waveNumber == 0 && creepsAlive == 0 && !riftSpawned) {
                     // create rift
-                    riftCreature = me->SummonCreature(90017, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
-                    FLR_init();
-                    sWorld->SendWorldText(LANG_EVENTMESSAGE, "spawned new rift");
-                    riftSpawned = true;
+                    std::list<TempSummon*>::iterator it;
+                    for (it = creatureList.begin(); it != creatureList.end(); it++)
+                    {
+                        TempSummon* currentCreature = *it;
+                        currentCreature->DespawnOrUnsummon(0);
+                    }
+
+                    uint32 myGUID = me->GetGUID().GetRawValue();
+
+                    if (myGUID == 3114138 && riftNumber == 0) {
+                        riftCreature = me->SummonCreature(90017, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
+                        FLR_init();
+                    }
+                    if (myGUID == 3114139 && riftNumber == 1) {
+                        riftCreature = me->SummonCreature(90017, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
+                        FLR_init();
+                    }
+                    if (myGUID == 3114140 && riftNumber == 2) {
+                        riftCreature = me->SummonCreature(90017, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
+                        FLR_init();
+                    }
+                    if (myGUID == 3114141 && riftNumber == 3) {
+                        riftCreature = me->SummonCreature(90017, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
+                        FLR_init();
+                    }
+                    
+                    
                 }
                 else if (waveNumber == 5 && creepsAlive == 0 && riftSpawned) {
                     //clean rift
