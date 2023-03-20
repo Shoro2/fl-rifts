@@ -241,7 +241,7 @@ public:
                     FLR_init();
 
                 }
-                else if (waveNumber == 5 && creepsAlive == 0 && riftSpawned) {
+                else if (waveNumber == 6 && creepsAlive == 0 && riftSpawned) {
                     //clean rift
                     riftCreature->DespawnOrUnsummon(0);
                     riftSpawned = false;
