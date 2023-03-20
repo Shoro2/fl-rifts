@@ -244,23 +244,13 @@ public:
             if (sConfigMgr->GetOption<bool>("FLRifts.Enable", false)) {
                 if (waveNumber == 0 && creepsAlive == 0 && !riftSpawned) {
                     // create rift
-
-                    
                     QueryResult qr = WorldDatabase.Query("SELECT guid FROM creature WHERE id1 = 90018 ORDER BY RAND() LIMIT 1");
                     uint32 targetGUID = (*qr)[0].Get<uint32>();
-                    
-                    uint32 myGUID = me->GetGUID().GetRawValue();
-                    uint32 myGUID2 = me->GetGUID().GetCounter();
+                    Creature* targetSummoner = ObjectAccessor::GetSpawnedCreatureByDBGUID(13, targetGUID);
 
-                    //Creature* targetSummoner = ObjectAccessor::GetCreature(*me, targetGUID);
-                    std::ostringstream ss;
-                    ss << "Try spwan: myGUID: " << myGUID << ", targetGUID: " << targetGUID << ", myGUID2: " << myGUID2;
-                    //sWorld->SendWorldText(LANG_EVENTMESSAGE, ss.str().c_str());
+                    riftCreature = targetSummoner->SummonCreature(90017, targetSummoner->GetPositionX(), targetSummoner->GetPositionY(), targetSummoner->GetPositionZ(), targetSummoner->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
+                    FLR_init();
 
-                    if (myGUID == targetGUID) {
-                        riftCreature = me->SummonCreature(90017, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
-                        FLR_init();
-                    }
                 }
                 else if (waveNumber == 5 && creepsAlive == 0 && riftSpawned) {
                     //clean rift
