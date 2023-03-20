@@ -111,9 +111,9 @@ public:
                         sWorld->SendWorldText(LANG_EVENTMESSAGE, "Spawning Wave 1");
                         for (size_t i = 0; i < 10; i++)
                         {
-                            posX = me->GetPositionX() + (rand() % 10 - 5);
-                            posY = me->GetPositionY() + (rand() % 10 - 5);
-                            posZ = me->GetPositionZ() + (rand() % 10 - 5);
+                            posX = me->GetPositionX() + (rand() % 20 - 10);
+                            posY = me->GetPositionY() + (rand() % 20 - 10);
+                            posZ = me->GetPositionZ();
                             posO = me->GetOrientation();
                             creatureList.push_front(me->SummonCreature(80010, posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
                             creepsAlive++;
@@ -133,9 +133,9 @@ public:
                         sWorld->SendWorldText(LANG_EVENTMESSAGE, "Spawning Wave 2");
                         for (size_t i = 0; i < 10; i++)
                         {
-                            posX = me->GetPositionX() + (rand() % 10 - 5);
-                            posY = me->GetPositionY() + (rand() % 10 - 5);
-                            posZ = me->GetPositionZ() + (rand() % 10 - 5);
+                            posX = me->GetPositionX() + (rand() % 20 - 10);
+                            posY = me->GetPositionY() + (rand() % 20 - 10);
+                            posZ = me->GetPositionZ();
                             posO = me->GetOrientation();
                             creatureList.push_front(me->SummonCreature(80010, posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
                             creepsAlive++;
@@ -155,9 +155,9 @@ public:
                         sWorld->SendWorldText(LANG_EVENTMESSAGE, "Spawning Wave 3");
                         for (size_t i = 0; i < 10; i++)
                         {
-                            posX = me->GetPositionX() + (rand() % 10 - 5);
-                            posY = me->GetPositionY() + (rand() % 10 - 5);
-                            posZ = me->GetPositionZ() + (rand() % 10 - 5);
+                            posX = me->GetPositionX() + (rand() % 20 - 10);
+                            posY = me->GetPositionY() + (rand() % 20 - 10);
+                            posZ = me->GetPositionZ();
                             posO = me->GetOrientation();
                             creatureList.push_front(me->SummonCreature(80010, posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
                             creepsAlive++;
