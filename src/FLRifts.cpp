@@ -159,11 +159,9 @@ public:
                     break;
                 case 5:
                     //end event
-                    
                     if (creepsAlive == 0) {
                         sWorld->SendWorldText(LANG_EVENTMESSAGE, "Finished Event, respawning Rift in 120 seconds.");
                         eventActive = false;
-                        me->m_Events.AddEvent(new DelayedRiftSpawn(), me->m_Events.CalculateTime(20000));
                         waveNumber++;
                     }
                     
@@ -249,6 +247,7 @@ public:
                     sWorld->SendWorldText(LANG_EVENTMESSAGE, "Despawn Rift");
                     riftCreature->DespawnOrUnsummon(0);
                     riftSpawned = false;
+                    me->m_Events.AddEvent(new DelayedRiftSpawn(), me->m_Events.CalculateTime(10000));
                     // todo loot
                 }
             }
