@@ -14,7 +14,6 @@ uint32 creepsAlive = 0;
 uint8 waveNumber = 0;
 std::list<TempSummon*> creatureList = {};
 Creature* riftCreature;
-uint32 riftNumber = rand() % 4;
 
 
 
@@ -25,7 +24,6 @@ void FLR_init() {
     creatureList = {};
     eventActive = true;
     riftSpawned = true;
-    riftNumber = rand() % 4;
     sWorld->SendWorldText(LANG_EVENTMESSAGE, "init");
 }
 
@@ -251,12 +249,15 @@ public:
                     QueryResult qr = WorldDatabase.Query("SELECT guid FROM creature WHERE id1 = 90018 ORDER BY RAND() LIMIT 1");
                     uint32 targetGUID = (*qr)[0].Get<uint32>();
                     uint32 myGUID = me->GetGUID().GetRawValue();
+                    
 
+                    //Creature* targetSummoner = ObjectAccessor::GetCreature(*me, targetGUID);
                     std::ostringstream ss;
-                    ss << "Try spwan: GUID: " << targetGUID << ", RiftNo: " << riftNumber;
+                    ss << "Try spwan: myGUID: " << myGUID << ", targetGUID: " << targetGUID;
                     sWorld->SendWorldText(LANG_EVENTMESSAGE, ss.str().c_str());
+                    sWorld->SendWorldText(LANG_EVENTMESSAGE, me->GetGUID().ToString());
 
-                    if (myGUID == targetGUID && riftNumber == 0) {
+                    if (myGUID == targetGUID) {
                         riftCreature = me->SummonCreature(90017, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
                         FLR_init();
                     }
