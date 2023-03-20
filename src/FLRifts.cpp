@@ -17,6 +17,7 @@ Creature* riftCreature;
 uint32 riftNumber = rand() % 4;
 
 
+
 void FLR_init() {
     //reset stuff
     creepsAlive = 0;
@@ -248,8 +249,13 @@ public:
 
                     uint32 myGUID = me->GetGUID().GetRawValue();
                     sWorld->SendWorldText(LANG_EVENTMESSAGE, "try to spawn:");
-                    sWorld->SendWorldText(LANG_EVENTMESSAGE, myGUID);
-                    sWorld->SendWorldText(LANG_EVENTMESSAGE, riftNumber);
+
+                    std::ostringstream ss;
+                    ss << "Try spwan: GUID: " << myGUID << ", RiftNo: " << riftNumber;
+
+
+                    sWorld->SendWorldText(LANG_EVENTMESSAGE, ss.str().c_str());
+
 
                     if (myGUID == 3114138 && riftNumber == 0) {
                         riftCreature = me->SummonCreature(90017, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
