@@ -247,34 +247,19 @@ public:
                 if (waveNumber == 0 && creepsAlive == 0 && !riftSpawned) {
                     // create rift
 
+                    
+                    QueryResult qr = WorldDatabase.Query("SELECT guid FROM creature WHERE id1 = 90018 ORDER BY RAND() LIMIT 1");
+                    uint32 targetGUID = (*qr)[0].Get<uint32>();
                     uint32 myGUID = me->GetGUID().GetRawValue();
-                    sWorld->SendWorldText(LANG_EVENTMESSAGE, "try to spawn:");
 
                     std::ostringstream ss;
-                    ss << "Try spwan: GUID: " << myGUID << ", RiftNo: " << riftNumber;
-
-
+                    ss << "Try spwan: GUID: " << targetGUID << ", RiftNo: " << riftNumber;
                     sWorld->SendWorldText(LANG_EVENTMESSAGE, ss.str().c_str());
 
-
-                    if (myGUID == 3114138 && riftNumber == 0) {
+                    if (myGUID == targetGUID && riftNumber == 0) {
                         riftCreature = me->SummonCreature(90017, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
                         FLR_init();
                     }
-                    if (myGUID == 3114139 && riftNumber == 1) {
-                        riftCreature = me->SummonCreature(90017, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
-                        FLR_init();
-                    }
-                    if (myGUID == 3114140 && riftNumber == 2) {
-                        riftCreature = me->SummonCreature(90017, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
-                        FLR_init();
-                    }
-                    if (myGUID == 3114141 && riftNumber == 3) {
-                        riftCreature = me->SummonCreature(90017, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
-                        FLR_init();
-                    }
-                    
-                    
                 }
                 else if (waveNumber == 5 && creepsAlive == 0 && riftSpawned) {
                     //clean rift
