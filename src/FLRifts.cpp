@@ -28,22 +28,7 @@ void FLR_init() {
 }
 
 
-class DelayedWaveSpawn : public BasicEvent
-{
-public:
-    DelayedWaveSpawn() : BasicEvent() { }
 
-    bool Execute(uint64 /*eventTime*/, uint32 /*updateTime*/) 
-    {
-        waveNumber++;
-        waiting = false;
-        sWorld->SendWorldText(LANG_EVENTMESSAGE, "done waiting");
-        return true;
-    }
-
-private:
-
-};
 
 class DelayedRiftSpawn : public BasicEvent
 {
@@ -55,6 +40,23 @@ public:
         waveNumber = 0;
         eventActive = true;
         sWorld->SendWorldText(LANG_EVENTMESSAGE, "Rift Delay");
+        return true;
+    }
+
+private:
+
+};
+
+class DelayedWaveSpawn : public BasicEvent
+{
+public:
+    DelayedWaveSpawn() : BasicEvent() { }
+
+    bool Execute(uint64 /*eventTime*/, uint32 /*updateTime*/)
+    {
+        waveNumber++;
+        waiting = false;
+        sWorld->SendWorldText(LANG_EVENTMESSAGE, "done waiting");
         return true;
     }
 
