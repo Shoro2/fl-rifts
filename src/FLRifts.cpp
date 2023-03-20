@@ -9,9 +9,10 @@
 #include "ScriptedAI/ScriptedCreature.h"
 
 bool eventActive = false, riftSpawned = false, waiting = false;
+float posX, posY, posZ, posO;
 uint32 creepsAlive = 0;
 uint8 waveNumber = 0;
-std::list<Creature*> creatureList = {};
+std::list<TempSummon*> creatureList = {};
 Creature* riftCreature;
 
 void FLR_init() {
@@ -19,18 +20,17 @@ void FLR_init() {
     creepsAlive = 0;
     waveNumber = 0;
     creatureList = {};
+    sWorld->SendWorldText(LANG_EVENTMESSAGE, "done waiting");
 }
 
 void FLR_clear() {
     // clear everything
-    std::list<Creature*>::iterator it;
+    std::list<TempSummon*>::iterator it;
     for (it = creatureList.begin(); it != creatureList.end(); it++)
     {
-
+        TempSummon* currentCreature = *it;
+        currentCreature->DespawnOrUnsummon(0);
     }
-
-
-
 }
 
 
@@ -60,6 +60,7 @@ public:
     bool Execute(uint64 /*eventTime*/, uint32 /*updateTime*/) override
     {
         waveNumber=0;
+        eventActive = true;
         return true;
     }
 
@@ -92,20 +93,25 @@ public:
         FLRiftsCreatureRiftAI(Creature* creature) : ScriptedAI(creature)
         {
             // Constructor, define variables here
+            
         }
-
+        
 
         void UpdateAI(uint32 /*diff*/) {
-            if (sConfigMgr->GetOption<bool>("FLRifts.Enable", false)) {
+            if (sConfigMgr->GetOption<bool>("FLRifts.Enable", false) && eventActive) {
                 switch (waveNumber) {
                 case 0:
                     //start spawning
                     if (creepsAlive == 0) {
+                        
                         sWorld->SendWorldText(LANG_EVENTMESSAGE, "Spawning Wave 1");
                         for (size_t i = 0; i < 10; i++)
                         {
-
-                            creatureList.push_front(me->SummonCreature(80010, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN));
+                            posX = me->GetPositionX()+(rand() %10 - 5);
+                            posY = me->GetPositionY() + (rand() % 10 - 5);
+                            posZ = me->GetPositionZ() + (rand() % 10 - 5);
+                            posO = me->GetOrientation();
+                            creatureList.push_front(me->SummonCreature(80010, posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
                             creepsAlive++;
                         }
                         waveNumber++;
@@ -123,7 +129,11 @@ public:
                         sWorld->SendWorldText(LANG_EVENTMESSAGE, "Spawning Wave 2");
                         for (size_t i = 0; i < 10; i++)
                         {
-                            creatureList.push_front(me->SummonCreature(80010, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN));
+                            posX = me->GetPositionX() + (rand() % 10 - 5);
+                            posY = me->GetPositionY() + (rand() % 10 - 5);
+                            posZ = me->GetPositionZ() + (rand() % 10 - 5);
+                            posO = me->GetOrientation();
+                            creatureList.push_front(me->SummonCreature(80010, posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
                             creepsAlive++;
                         }
                         waveNumber++;
@@ -141,7 +151,11 @@ public:
                         sWorld->SendWorldText(LANG_EVENTMESSAGE, "Spawning Wave 3");
                         for (size_t i = 0; i < 10; i++)
                         {
-                            creatureList.push_front(me->SummonCreature(80010, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN));
+                            posX = me->GetPositionX() + (rand() % 10 - 5);
+                            posY = me->GetPositionY() + (rand() % 10 - 5);
+                            posZ = me->GetPositionZ() + (rand() % 10 - 5);
+                            posO = me->GetOrientation();
+                            creatureList.push_front(me->SummonCreature(80010, posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
                             creepsAlive++;
                         }
                         waveNumber++;
@@ -151,10 +165,11 @@ public:
                     //end event
                     
                     if (creepsAlive == 0) {
-                        sWorld->SendWorldText(LANG_EVENTMESSAGE, "Finished Event");
+                        sWorld->SendWorldText(LANG_EVENTMESSAGE, "Finished Event, respawning Rift in 120 seconds.");
                         eventActive = false;
                         FLR_clear();
                         me->m_Events.AddEvent(new DelayedRiftSpawn(), me->m_Events.CalculateTime(120000));
+                        waveNumber++;
                     }
                     
                     break;
