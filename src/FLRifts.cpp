@@ -91,7 +91,12 @@ public:
             // Constructor, define variables here
             
         }
-        
+        // fire: 80039, 80041, 80047, 80017 | 80040, 80042
+        // shadow: 80027, 80028, 80029, 80035 | 80030, 80036
+        // air: 80043, 80044, 80045, 80046 | 80048, 80049
+        // water: 80031, 80032, 80033, 80037 | 80034, 80038
+
+
 
         void UpdateAI(uint32 /*diff*/) {
             if (sConfigMgr->GetOption<bool>("FLRifts.Enable", false) && eventActive) {
@@ -107,7 +112,23 @@ public:
                             posY = me->GetPositionY() + (rand() % 40 - 20);
                             posZ = me->GetPositionZ();
                             posO = me->GetOrientation();
-                            creatureList.push_front(me->SummonCreature(RAND(80027, 80028, 80029, 80035), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                            switch (me->GetEntry()) {
+                            case 90017:
+                                creatureList.push_front(me->SummonCreature(RAND(80027, 80028, 80029, 80035), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                                break;
+                            case 90016:
+                                creatureList.push_front(me->SummonCreature(RAND(80039, 80041, 80047, 80017), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                                break;
+                            case 90015:
+                                creatureList.push_front(me->SummonCreature(RAND(80031, 80032, 80033, 80037), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                                break;
+                            case 90014:
+                                creatureList.push_front(me->SummonCreature(RAND(80043, 80044, 80045, 80046), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                                break;
+                            default:
+                                break;
+                            }
+                            
                             creepsAlive++;
                         }
                         waveNumber++;
@@ -129,7 +150,22 @@ public:
                             posY = me->GetPositionY() + (rand() % 40 - 20);
                             posZ = me->GetPositionZ();
                             posO = me->GetOrientation();
-                            creatureList.push_front(me->SummonCreature(RAND(80027, 80028, 80029, 80035), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                            switch (me->GetEntry()) {
+                            case 90017:
+                                creatureList.push_front(me->SummonCreature(RAND(80027, 80028, 80029, 80035), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                                break;
+                            case 90016:
+                                creatureList.push_front(me->SummonCreature(RAND(80039, 80041, 80047, 80017), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                                break;
+                            case 90015:
+                                creatureList.push_front(me->SummonCreature(RAND(80031, 80032, 80033, 80037), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                                break;
+                            case 90014:
+                                creatureList.push_front(me->SummonCreature(RAND(80043, 80044, 80045, 80046), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                                break;
+                            default:
+                                break;
+                            }
                             creepsAlive++;
                         }
                         waveNumber++;
@@ -149,7 +185,22 @@ public:
                         posY = me->GetPositionY() + (rand() % 40 - 20);
                         posZ = me->GetPositionZ();
                         posO = me->GetOrientation();
-                        creatureList.push_front(me->SummonCreature(RAND(80030, 80036), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                        switch (me->GetEntry()) {
+                        case 90017:
+                            creatureList.push_front(me->SummonCreature(RAND(80030, 80036), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                            break;
+                        case 90016:
+                            creatureList.push_front(me->SummonCreature(RAND(80040, 80042), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                            break;
+                        case 90015:
+                            creatureList.push_front(me->SummonCreature(RAND(80034, 80038), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                            break;
+                        case 90014:
+                            creatureList.push_front(me->SummonCreature(RAND(80048, 80049), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                            break;
+                        default:
+                            break;
+                        }
                         creepsAlive++;
                         
                         waveNumber++;
@@ -236,7 +287,7 @@ public:
                     //727
                     Creature* targetSummoner = ObjectAccessor::GetSpawnedCreatureByDBGUID(13, targetGUID);
 
-                    riftCreature = targetSummoner->SummonCreature(90017, targetSummoner->GetPositionX(), targetSummoner->GetPositionY(), targetSummoner->GetPositionZ(), targetSummoner->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
+                    riftCreature = targetSummoner->SummonCreature(RAND(90017,90016,90015,90014), targetSummoner->GetPositionX(), targetSummoner->GetPositionY(), targetSummoner->GetPositionZ(), targetSummoner->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
                     FLR_init();
 
                 }
@@ -268,7 +319,6 @@ public:
 void AddFLRiftsScripts()
 {
     new FLRiftsPlayer();
-
     new FLRiftsCreatureRift();
     new FLRiftsCreatureTrash();
     new FLRiftsCreatureSpawner();
