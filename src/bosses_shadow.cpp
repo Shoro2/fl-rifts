@@ -138,6 +138,11 @@ public:
     private:
         uint8 chargeCounter = 0;
     };
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new boss_shadowAI(creature);
+    }
 };
 
 
