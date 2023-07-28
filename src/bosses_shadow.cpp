@@ -7,8 +7,8 @@
 
 enum Texts
 {
-    SAY_DEATH = 0,
-    SAY_ENGAGE = 1,
+    SAY_DEATH = 1,
+    SAY_ENGAGE = 0,
     SAY_ONKILL = 2,
     SAY_EVADE = 3
 };
