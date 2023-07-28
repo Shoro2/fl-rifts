@@ -4,6 +4,8 @@
 #include "Chat.h"
 #include "ScriptedCreature.h"
 #include "fl-rifts/src/FLRifts.cpp"
+#include "SpellAuraEffects.h"
+#include "SpellScript.h"
 
 enum Texts
 {
@@ -63,10 +65,10 @@ public:
             sWorld->SendWorldText(LANG_EVENTMESSAGE, "reset");
         }
 
-        void JustEngagedWith(Unit* who) override
+        void JustEngagedWith(Unit* /*who*/) override
         {
             Talk(SAY_ENGAGE);
-            ScriptedAI::JustEngagedWith(who);
+            //ScriptedAI::JustEngagedWith(who);
             Initialize();
             sWorld->SendWorldText(LANG_EVENTMESSAGE, "engaged");
         }
