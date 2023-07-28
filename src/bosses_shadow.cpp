@@ -50,6 +50,7 @@ public:
             events.ScheduleEvent(EVENT_SPELL_SILENCE, urand(18000, 22000));
             events.ScheduleEvent(EVENT_SPELL_STRIKE, urand(7000, 9000));
             events.ScheduleEvent(EVENT_SPELL_CLEAVE, urand(12000, 15000));
+            sWorld->SendWorldText(LANG_EVENTMESSAGE, "init");
             
         }
 
@@ -59,6 +60,7 @@ public:
             // Implement boss reset behavior
             Talk(SAY_EVADE);
             events.Reset();
+            sWorld->SendWorldText(LANG_EVENTMESSAGE, "reset");
         }
 
         void JustEngagedWith(Unit* who) override
@@ -66,6 +68,7 @@ public:
             Talk(SAY_ENGAGE);
             ScriptedAI::JustEngagedWith(who);
             Initialize();
+            sWorld->SendWorldText(LANG_EVENTMESSAGE, "engaged");
         }
 
         void UpdateAI(uint32 diff) override
@@ -139,7 +142,7 @@ public:
         uint8 chargeCounter = 0;
     };
 
-    CreatureAI* GetAI(Creature* creature) const
+    CreatureAI* GetAI(Creature* creature) const override
     {
         return new boss_shadowAI(creature);
     }
