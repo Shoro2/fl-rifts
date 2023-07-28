@@ -39,9 +39,9 @@ class boss_shadow : public CreatureScript
 public:
     boss_shadow() : CreatureScript("boss_shadow") { }
 
-    struct boss_shadowAI : public BossAI
+    struct boss_shadowAI : public WorldBossAI
     {
-        boss_shadowAI(Creature* creature) : BossAI(creature, 0) {
+        boss_shadowAI(Creature* creature) : WorldBossAI(creature) {
             
         }
         void Initialize()
@@ -64,7 +64,7 @@ public:
         void JustEngagedWith(Unit* who) override
         {
             Talk(SAY_ENGAGE);
-            BossAI::JustEngagedWith(who);
+            WorldBossAI::JustEngagedWith(who);
             Initialize();
         }
 
