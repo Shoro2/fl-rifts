@@ -71,7 +71,7 @@ public:
         void UpdateAI(uint32 diff) override
         {
             // Implement boss update behavior (abilities, movement, etc.)
-            if (!UpdateVictim() || !CheckInRoom())
+            if (!UpdateVictim())
             {
                 return;
             }
