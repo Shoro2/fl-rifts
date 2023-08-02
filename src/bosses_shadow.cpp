@@ -142,7 +142,7 @@ public:
                 {
                     Player* myPlayer = threatEntry->GetOwner()->ToPlayer();
                     myPlayer->AddItem(250075, 100);
-                    boolean found = false;
+                    bool found = false;
                     for (const auto& player : aggroList)
                     {
                         if (player == myPlayer) found = true;
@@ -167,11 +167,6 @@ public:
             {
                 i->AddItem(250075, 100);
             }
-
-
-
-
-
         }
 
     private:
