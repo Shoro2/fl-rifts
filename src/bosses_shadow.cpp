@@ -141,7 +141,7 @@ public:
 
                 {
                     Player* myPlayer = threatEntry->GetOwner()->ToPlayer();
-                    myPlayer->AddItem(250075, 100);
+                    /*
                     bool found = false;
                     for (const auto& player : aggroList)
                     {
@@ -150,6 +150,8 @@ public:
                     }
 
                     if (!found) aggroList.push_front(myPlayer);
+
+                    */
                 }
                 events.RepeatEvent(1000);
                 break;
