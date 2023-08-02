@@ -35,7 +35,7 @@ class DelayedRiftSpawn : public BasicEvent
 public:
     DelayedRiftSpawn() : BasicEvent() { }
 
-    bool Execute(uint64 /*eventTime*/, uint32 /*updateTime*/) 
+    bool Execute(uint64 /*eventTime*/, uint32 /*updateTime*/)
     {
         waveNumber = 0;
         eventActive = true;
@@ -89,7 +89,7 @@ public:
         FLRiftsCreatureRiftAI(Creature* creature) : ScriptedAI(creature)
         {
             // Constructor, define variables here
-            
+
         }
         // fire: 80039, 80041, 80047, 80017 | 80040, 80042
         // shadow: 80027, 80028, 80029, 80035 | 80030, 80036
@@ -104,7 +104,7 @@ public:
                 case 0:
                     //start spawning
                     if (creepsAlive == 0) {
-                        
+
                         sWorld->SendWorldText(LANG_EVENTMESSAGE, "Spawning Wave 1");
                         for (size_t i = 0; i < 10; i++)
                         {
@@ -128,7 +128,7 @@ public:
                             default:
                                 break;
                             }
-                            
+
                             creepsAlive++;
                         }
                         waveNumber++;
@@ -136,7 +136,7 @@ public:
                     break;
                 case 1: // wait
                     if (creepsAlive == 0 && waiting == false) {
-                        sWorld->SendWorldText(LANG_EVENTMESSAGE, "Waiting for Wave 2"); 
+                        sWorld->SendWorldText(LANG_EVENTMESSAGE, "Waiting for Wave 2");
                         me->m_Events.AddEvent(new DelayedWaveSpawn(), me->m_Events.CalculateTime(10000));
                         waiting = true;
                     }
@@ -202,7 +202,7 @@ public:
                             break;
                         }
                         creepsAlive++;
-                        
+
                         waveNumber++;
                     }
                     break;
@@ -213,7 +213,7 @@ public:
                         eventActive = false;
                         waveNumber++;
                     }
-                    
+
                     break;
                 default:
                     break;
@@ -283,19 +283,12 @@ public:
                 if (waveNumber == 0 && creepsAlive == 0 && !riftSpawned) {
                     // create rift
                     QueryResult qr = WorldDatabase.Query("SELECT guid FROM creature WHERE id1 = 90018 ORDER BY RAND() LIMIT 1");
-                    if (qr) {
-                        uint32 targetGUID = (*qr)[0].Get<uint32>();
-                        //727
-                        Creature* targetSummoner = ObjectAccessor::GetSpawnedCreatureByDBGUID(13, targetGUID);
 
-                        riftCreature = targetSummoner->SummonCreature(90017, targetSummoner->GetPositionX(), targetSummoner->GetPositionY(), targetSummoner->GetPositionZ(), targetSummoner->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
-                        FLR_init();
-                    }
-                    else {
-                        sWorld->SendWorldText(LANG_EVENTMESSAGE, "No Rift Summoner spawned. id 90018");
-                    }
-                    
+                    uint32 targetGUID = (*qr)[0].Get<uint32>();
+                    Creature* targetSummoner = ObjectAccessor::GetSpawnedCreatureByDBGUID(13, targetGUID);
 
+                    riftCreature = targetSummoner->SummonCreature(90017, targetSummoner->GetPositionX(), targetSummoner->GetPositionY(), targetSummoner->GetPositionZ(), targetSummoner->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
+                    FLR_init();
                 }
                 else if (waveNumber == 6 && creepsAlive == 0 && riftSpawned) {
                     //clean rift
@@ -306,7 +299,7 @@ public:
                     // todo loot
                 }
             }
-            
+
         }
 
     private:

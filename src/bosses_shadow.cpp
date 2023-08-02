@@ -138,7 +138,6 @@ public:
             // Implement boss death behavior
             Talk(SAY_DEATH);
             creepsAlive--;
-            Map* myMap = me->GetMap();
 
             //Map::PlayerList const& mapPlayers = myMap->GetPlayers();
 
