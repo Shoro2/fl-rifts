@@ -138,10 +138,48 @@ public:
             // Implement boss death behavior
             Talk(SAY_DEATH);
             creepsAlive--;
+            Map* myMap = me->GetMap();
+
+            //Map::PlayerList const& mapPlayers = myMap->GetPlayers();
+
+
+
+
+            ThreatMgr threatManager = me->GetThreatMgr();
+
+
+            ThreatContainer::StorageType threatEntries = threatManager.GetThreatList();
+
+            for (const auto& threatEntry : threatEntries)
+
+            {
+                Player* myPlayer = threatEntry->GetOwner()->ToPlayer();
+                myPlayer->AddItem(250075, 100);
+            }
+
+            /*
+
+            Map::PlayerList pList = myMap->GetPlayers();
+            for (auto i = pList.begin(); i != pList.end(); ++i)
+            {
+                Player* myPlayer = i->GetSource();
+
+
+                if (me->isAttackingPlayer()) {
+                    myPlayer->AddItem(250075, 100);
+                }
+                
+            }
+
+            */
+
+
+
         }
 
     private:
         uint8 chargeCounter = 0;
+
     };
 
     CreatureAI* GetAI(Creature* creature) const override

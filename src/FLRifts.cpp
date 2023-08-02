@@ -187,7 +187,7 @@ public:
                         posO = me->GetOrientation();
                         switch (me->GetEntry()) {
                         case 90017:
-                            creatureList.push_front(me->SummonCreature(RAND(80030, 80036), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                            creatureList.push_front(me->SummonCreature(80036, posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
                             break;
                         case 90016:
                             creatureList.push_front(me->SummonCreature(RAND(80040, 80042), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
