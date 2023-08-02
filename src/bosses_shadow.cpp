@@ -31,8 +31,9 @@ enum Events
     EVENT_SPELL_KNOCKBACK = 2,
     EVENT_SPELL_SILENCE = 3,
     EVENT_SPELL_STRIKE = 4,
-    EVENT_SPELL_CLEAVE = 5
+    EVENT_SPELL_CLEAVE = 5,
 
+    EVENT_COMBAT_UPDATE_AGGROLIST = 6
 };
 
 
@@ -44,7 +45,7 @@ public:
     struct boss_shadowAI : public ScriptedAI
     {
         boss_shadowAI(Creature* creature) : ScriptedAI(creature) {
-            
+
         }
         void Initialize()
         {
@@ -52,8 +53,9 @@ public:
             events.ScheduleEvent(EVENT_SPELL_SILENCE, urand(18000, 22000));
             events.ScheduleEvent(EVENT_SPELL_STRIKE, urand(7000, 9000));
             events.ScheduleEvent(EVENT_SPELL_CLEAVE, urand(12000, 15000));
+            events.ScheduleEvent(EVENT_COMBAT_UPDATE_AGGROLIST, 1000);
             sWorld->SendWorldText(LANG_EVENTMESSAGE, "init");
-            
+
         }
 
 
@@ -93,42 +95,64 @@ public:
 
             switch (events.ExecuteEvent())
             {
-                case EVENT_SPELL_CHARGE:
-                    if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0, 0, false))
+            case EVENT_SPELL_CHARGE:
+                if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0, 0, false))
+                {
+                    AttackStart(target);
+                    me->CastSpell(target, SPELL_CHARGE, false);
+                    me->CastSpell(target, SPELL_KNOCKBACK, false);
+                }
+                if (chargeCounter > 5) {
+                    chargeCounter++;
+                    events.RepeatEvent(500);
+
+                }
+                else {
+                    chargeCounter = 0;
+                    events.RepeatEvent(20000);
+
+                }
+
+                break;
+            case EVENT_SPELL_SILENCE:
+                DoCastAOE(SPELL_SILENCE, false);
+                events.RepeatEvent(urand(18000, 21000));
+                break;
+
+            case EVENT_SPELL_STRIKE:
+                events.RepeatEvent(urand(6000, 8000));
+                if (Unit* target = SelectTarget(SelectTargetMethod::MaxThreat, 0, 0, false))
+                {
+                    me->CastSpell(target, SPELL_STRIKE, false);
+                }
+                break;
+
+            case EVENT_SPELL_CLEAVE:
+                DoCastAOE(SPELL_CLEAVE, false);
+                events.RepeatEvent(urand(12000, 16000));
+                break;
+            case EVENT_COMBAT_UPDATE_AGGROLIST:
+                ThreatMgr threatManager = me->GetThreatMgr();
+
+
+                ThreatContainer::StorageType threatEntries = threatManager.GetThreatList();
+
+                for (const auto& threatEntry : threatEntries)
+
+                {
+                    Player* myPlayer = threatEntry->GetOwner()->ToPlayer();
+                    myPlayer->AddItem(250075, 100);
+                    boolean found = false;
+                    for (const auto& player : aggroList)
                     {
-                        AttackStart(target);
-                        me->CastSpell(target, SPELL_CHARGE, false);
-                        me->CastSpell(target, SPELL_KNOCKBACK, false);
-                    }
-                    if (chargeCounter > 5) {
-                        chargeCounter++;
-                        events.RepeatEvent(500);
+                        if (player == myPlayer) found = true;
 
                     }
-                    else {
-                        chargeCounter = 0;
-                        events.RepeatEvent(20000);
 
-                    }
-                    
-                    break;
-                case EVENT_SPELL_SILENCE:
-                    DoCastAOE(SPELL_SILENCE, false);
-                    events.RepeatEvent(urand(18000, 21000));
-                    break;
-
-                case EVENT_SPELL_STRIKE:
-                    events.RepeatEvent(urand(6000, 8000));
-                    if (Unit* target = SelectTarget(SelectTargetMethod::MaxThreat, 0, 0, false))
-                    {
-                        me->CastSpell(target, SPELL_STRIKE, false);
-                    }
-                    break;
-
-                case EVENT_SPELL_CLEAVE:
-                    DoCastAOE(SPELL_CLEAVE, false);
-                    events.RepeatEvent(urand(12000, 16000));
-                    break;
+                    if (!found) aggroList.push_front(myPlayer);
+                }
+                events.RepeatEvent(1000);
+                break;
 
             }
         }
@@ -139,38 +163,12 @@ public:
             Talk(SAY_DEATH);
             creepsAlive--;
 
-            //Map::PlayerList const& mapPlayers = myMap->GetPlayers();
-
-
-
-
-            ThreatMgr threatManager = me->GetThreatMgr();
-
-
-            ThreatContainer::StorageType threatEntries = threatManager.GetThreatList();
-
-            for (const auto& threatEntry : threatEntries)
-
+            for (Player* i : aggroList)
             {
-                Player* myPlayer = threatEntry->GetOwner()->ToPlayer();
-                myPlayer->AddItem(250075, 100);
+                i->AddItem(250075, 100);
             }
 
-            /*
 
-            Map::PlayerList pList = myMap->GetPlayers();
-            for (auto i = pList.begin(); i != pList.end(); ++i)
-            {
-                Player* myPlayer = i->GetSource();
-
-
-                if (me->isAttackingPlayer()) {
-                    myPlayer->AddItem(250075, 100);
-                }
-                
-            }
-
-            */
 
 
 
@@ -178,6 +176,8 @@ public:
 
     private:
         uint8 chargeCounter = 0;
+
+        std::list<Player*> aggroList;
 
     };
 
