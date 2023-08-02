@@ -9,7 +9,7 @@
 #include "ScriptedAI/ScriptedCreature.h"
 
 bool eventActive = false, riftSpawned = false, waiting = false;
-float posX, posY, posZ, posO;
+float posX, posY, posZ + 5, posO;
 uint32 creepsAlive = 0;
 uint8 waveNumber = 0;
 std::list<TempSummon*> creatureList = {};
@@ -91,20 +91,20 @@ public:
                         {
                             posX = me->GetPositionX() + (rand() % 40 - 20);
                             posY = me->GetPositionY() + (rand() % 40 - 20);
-                            posZ = me->GetPositionZ();
+                            posZ + 5 = me->GetPositionZ();
                             posO = me->GetOrientation();
                             switch (me->GetEntry()) {
                             case 90017:
-                                creatureList.push_front(me->SummonCreature(RAND(80027, 80028, 80029, 80035), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                                creatureList.push_front(me->SummonCreature(RAND(80027, 80028, 80029, 80035), posX, posY, posZ + 5, posO, TEMPSUMMON_MANUAL_DESPAWN));
                                 break;
                             case 90016:
-                                creatureList.push_front(me->SummonCreature(RAND(80039, 80041, 80047, 80017), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                                creatureList.push_front(me->SummonCreature(RAND(80039, 80041, 80047, 80017), posX, posY, posZ + 5, posO, TEMPSUMMON_MANUAL_DESPAWN));
                                 break;
                             case 90015:
-                                creatureList.push_front(me->SummonCreature(RAND(80031, 80032, 80033, 80037), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                                creatureList.push_front(me->SummonCreature(RAND(80031, 80032, 80033, 80037), posX, posY, posZ + 5, posO, TEMPSUMMON_MANUAL_DESPAWN));
                                 break;
                             case 90014:
-                                creatureList.push_front(me->SummonCreature(RAND(80043, 80044, 80045, 80046), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                                creatureList.push_front(me->SummonCreature(RAND(80043, 80044, 80045, 80046), posX, posY, posZ + 5, posO, TEMPSUMMON_MANUAL_DESPAWN));
                                 break;
                             default:
                                 break;
@@ -127,20 +127,20 @@ public:
                         {
                             posX = me->GetPositionX() + (rand() % 40 - 20);
                             posY = me->GetPositionY() + (rand() % 40 - 20);
-                            posZ = me->GetPositionZ();
+                            posZ + 5 = me->GetPositionZ();
                             posO = me->GetOrientation();
                             switch (me->GetEntry()) {
                             case 90017:
-                                creatureList.push_front(me->SummonCreature(RAND(80027, 80028, 80029, 80035), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                                creatureList.push_front(me->SummonCreature(RAND(80027, 80028, 80029, 80035), posX, posY, posZ + 5, posO, TEMPSUMMON_MANUAL_DESPAWN));
                                 break;
                             case 90016:
-                                creatureList.push_front(me->SummonCreature(RAND(80039, 80041, 80047, 80017), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                                creatureList.push_front(me->SummonCreature(RAND(80039, 80041, 80047, 80017), posX, posY, posZ + 5, posO, TEMPSUMMON_MANUAL_DESPAWN));
                                 break;
                             case 90015:
-                                creatureList.push_front(me->SummonCreature(RAND(80031, 80032, 80033, 80037), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                                creatureList.push_front(me->SummonCreature(RAND(80031, 80032, 80033, 80037), posX, posY, posZ + 5, posO, TEMPSUMMON_MANUAL_DESPAWN));
                                 break;
                             case 90014:
-                                creatureList.push_front(me->SummonCreature(RAND(80043, 80044, 80045, 80046), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                                creatureList.push_front(me->SummonCreature(RAND(80043, 80044, 80045, 80046), posX, posY, posZ + 5, posO, TEMPSUMMON_MANUAL_DESPAWN));
                                 break;
                             default:
                                 break;
@@ -160,20 +160,20 @@ public:
                     if (creepsAlive == 0) {
                         posX = me->GetPositionX() + (rand() % 40 - 20);
                         posY = me->GetPositionY() + (rand() % 40 - 20);
-                        posZ = me->GetPositionZ();
+                        posZ + 5 = me->GetPositionZ();
                         posO = me->GetOrientation();
                         switch (me->GetEntry()) {
                         case 90017:
-                            creatureList.push_front(me->SummonCreature(80036, posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                            creatureList.push_front(me->SummonCreature(80036, posX, posY, posZ + 5, posO, TEMPSUMMON_MANUAL_DESPAWN));
                             break;
                         case 90016:
-                            creatureList.push_front(me->SummonCreature(RAND(80040, 80042), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                            creatureList.push_front(me->SummonCreature(RAND(80040, 80042), posX, posY, posZ + 5, posO, TEMPSUMMON_MANUAL_DESPAWN));
                             break;
                         case 90015:
-                            creatureList.push_front(me->SummonCreature(RAND(80034, 80038), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                            creatureList.push_front(me->SummonCreature(RAND(80034, 80038), posX, posY, posZ + 5, posO, TEMPSUMMON_MANUAL_DESPAWN));
                             break;
                         case 90014:
-                            creatureList.push_front(me->SummonCreature(RAND(80048, 80049), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                            creatureList.push_front(me->SummonCreature(RAND(80048, 80049), posX, posY, posZ + 5, posO, TEMPSUMMON_MANUAL_DESPAWN));
                             break;
                         default:
                             break;
