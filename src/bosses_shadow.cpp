@@ -140,9 +140,9 @@ public:
                 for (const auto& threatEntry : threatEntries)
 
                 {
-                    Player* myPlayer = threatEntry->GetSource()->SelectVictim()->ToPlayer();
+                    //Player* myPlayer = threatEntry->GetSource()->SelectVictim()->ToPlayer();
 
-                    //Player* myPlayertwo = threatEntry->getTarget()->ToPlayer();
+                    Player* myPlayer = threatEntry->getTarget()->ToPlayer();
 
                     //Player* myPlayer = threatEntry->GetOwner()->ToPlayer();
 
