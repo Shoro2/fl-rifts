@@ -283,12 +283,18 @@ public:
                 if (waveNumber == 0 && creepsAlive == 0 && !riftSpawned) {
                     // create rift
                     QueryResult qr = WorldDatabase.Query("SELECT guid FROM creature WHERE id1 = 90018 ORDER BY RAND() LIMIT 1");
-                    uint32 targetGUID = (*qr)[0].Get<uint32>();
-                    //727
-                    Creature* targetSummoner = ObjectAccessor::GetSpawnedCreatureByDBGUID(13, targetGUID);
+                    if (qr) {
+                        uint32 targetGUID = (*qr)[0].Get<uint32>();
+                        //727
+                        Creature* targetSummoner = ObjectAccessor::GetSpawnedCreatureByDBGUID(13, targetGUID);
 
-                    riftCreature = targetSummoner->SummonCreature(RAND(90017,90016,90015,90014), targetSummoner->GetPositionX(), targetSummoner->GetPositionY(), targetSummoner->GetPositionZ(), targetSummoner->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
-                    FLR_init();
+                        riftCreature = targetSummoner->SummonCreature(90017, targetSummoner->GetPositionX(), targetSummoner->GetPositionY(), targetSummoner->GetPositionZ(), targetSummoner->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
+                        FLR_init();
+                    }
+                    else {
+                        sWorld->SendWorldText(LANG_EVENTMESSAGE, "No Rift Summoner spawned. id 90018");
+                    }
+                    
 
                 }
                 else if (waveNumber == 6 && creepsAlive == 0 && riftSpawned) {
