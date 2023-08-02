@@ -285,7 +285,7 @@ public:
                     QueryResult qr = WorldDatabase.Query("SELECT guid FROM creature WHERE id1 = 90018 ORDER BY RAND() LIMIT 1");
 
                     uint32 targetGUID = (*qr)[0].Get<uint32>();
-                    Creature* targetSummoner = ObjectAccessor::GetSpawnedCreatureByDBGUID(13, targetGUID);
+                    Creature* targetSummoner = ObjectAccessor::GetSpawnedCreatureByDBGUID(727, targetGUID);
 
                     riftCreature = targetSummoner->SummonCreature(90017, targetSummoner->GetPositionX(), targetSummoner->GetPositionY(), targetSummoner->GetPositionZ(), targetSummoner->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
                     FLR_init();
