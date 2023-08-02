@@ -140,7 +140,13 @@ public:
                 for (const auto& threatEntry : threatEntries)
 
                 {
-                    Player* myPlayer = threatEntry->GetOwner()->ToPlayer();
+                    Player* myPlayer = threatEntry->GetSource()->SelectVictim()->ToPlayer();
+
+                    //Player* myPlayertwo = threatEntry->getTarget()->ToPlayer();
+
+                    //Player* myPlayer = threatEntry->GetOwner()->ToPlayer();
+
+
                     /*
                     bool found = false;
                     for (const auto& player : aggroList)
