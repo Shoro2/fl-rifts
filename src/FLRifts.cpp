@@ -24,7 +24,7 @@ void FLR_init() {
     creatureList = {};
     eventActive = true;
     riftSpawned = true;
-    sWorld->SendWorldText(LANG_EVENTMESSAGE, "init");
+    sWorld->SendWorldText(LANG_EVENTMESSAGE, "A new rift has formed in the Land of Exobeast. Deafeat all waves of Demons and fight the big boss to receive additional loot!");
 }
 
 
@@ -39,7 +39,6 @@ public:
     {
         waveNumber = 0;
         eventActive = true;
-        sWorld->SendWorldText(LANG_EVENTMESSAGE, "Rift Delay");
         return true;
     }
 
@@ -56,27 +55,11 @@ public:
     {
         waveNumber++;
         waiting = false;
-        sWorld->SendWorldText(LANG_EVENTMESSAGE, "done waiting");
         return true;
     }
 
 private:
 
-};
-
-// Add player scripts
-class FLRiftsPlayer : public PlayerScript
-{
-public:
-    FLRiftsPlayer() : PlayerScript("FLRiftsPlayer") { }
-
-    void OnLogin(Player* player) override
-    {
-        if (sConfigMgr->GetOption<bool>("FLRifts.Enable", false))
-        {
-            ChatHandler(player->GetSession()).SendSysMessage("Hello World from Rifts-Module!");
-        }
-    }
 };
 
 class FLRiftsCreatureRift : public CreatureScript
@@ -104,8 +87,6 @@ public:
                 case 0:
                     //start spawning
                     if (creepsAlive == 0) {
-
-                        sWorld->SendWorldText(LANG_EVENTMESSAGE, "Spawning Wave 1");
                         for (size_t i = 0; i < 10; i++)
                         {
                             posX = me->GetPositionX() + (rand() % 40 - 20);
@@ -136,14 +117,12 @@ public:
                     break;
                 case 1: // wait
                     if (creepsAlive == 0 && waiting == false) {
-                        sWorld->SendWorldText(LANG_EVENTMESSAGE, "Waiting for Wave 2");
                         me->m_Events.AddEvent(new DelayedWaveSpawn(), me->m_Events.CalculateTime(10000));
                         waiting = true;
                     }
                     break;
                 case 2:
                     if (creepsAlive == 0) {
-                        sWorld->SendWorldText(LANG_EVENTMESSAGE, "Spawning Wave 2");
                         for (size_t i = 0; i < 10; i++)
                         {
                             posX = me->GetPositionX() + (rand() % 40 - 20);
@@ -173,14 +152,12 @@ public:
                     break;
                 case 3: //wait
                     if (creepsAlive == 0 && waiting == false) {
-                        sWorld->SendWorldText(LANG_EVENTMESSAGE, "Waiting for Wave 3");
                         me->m_Events.AddEvent(new DelayedWaveSpawn(), me->m_Events.CalculateTime(10000));
                         waiting = true;
                     }
                     break;
                 case 4:
                     if (creepsAlive == 0) {
-                        sWorld->SendWorldText(LANG_EVENTMESSAGE, "Spawning Wave 3");
                         posX = me->GetPositionX() + (rand() % 40 - 20);
                         posY = me->GetPositionY() + (rand() % 40 - 20);
                         posZ = me->GetPositionZ();
@@ -209,7 +186,7 @@ public:
                 case 5:
                     //end event
                     if (creepsAlive == 0) {
-                        sWorld->SendWorldText(LANG_EVENTMESSAGE, "Finished Event, respawning Rift in 120 seconds.");
+                        sWorld->SendWorldText(LANG_EVENTMESSAGE, "The Rift was closed, next one approaching in 30 minutes.");
                         eventActive = false;
                         waveNumber++;
                     }
@@ -250,7 +227,6 @@ public:
 
         void JustDied(Unit* /*killer*/) override {
             creepsAlive--;
-            sWorld->SendWorldText(LANG_EVENTMESSAGE, "creep killed");
         }
 
     private:
@@ -292,10 +268,9 @@ public:
                 }
                 else if (waveNumber == 6 && creepsAlive == 0 && riftSpawned) {
                     //clean rift
-                    sWorld->SendWorldText(LANG_EVENTMESSAGE, "Despawn Rift");
                     riftCreature->DespawnOrUnsummon(0);
                     riftSpawned = false;
-                    me->m_Events.AddEvent(new DelayedRiftSpawn(), me->m_Events.CalculateTime(10000));
+                    me->m_Events.AddEvent(new DelayedRiftSpawn(), me->m_Events.CalculateTime(1800000));
                     // todo loot
                 }
             }
@@ -317,7 +292,6 @@ public:
 // Add all scripts in one
 void AddFLRiftsScripts()
 {
-    new FLRiftsPlayer();
     new FLRiftsCreatureRift();
     new FLRiftsCreatureTrash();
     new FLRiftsCreatureSpawner();

@@ -22,7 +22,6 @@ enum Spells
     SPELL_SILENCE = 64189,
     SPELL_STRIKE = 62130,
     SPELL_CLEAVE = 70670
-
 };
 
 enum Events
@@ -32,8 +31,6 @@ enum Events
     EVENT_SPELL_SILENCE = 3,
     EVENT_SPELL_STRIKE = 4,
     EVENT_SPELL_CLEAVE = 5,
-
-    EVENT_COMBAT_UPDATE_AGGROLIST = 6
 };
 
 
@@ -53,9 +50,6 @@ public:
             events.ScheduleEvent(EVENT_SPELL_SILENCE, urand(18000, 22000));
             events.ScheduleEvent(EVENT_SPELL_STRIKE, urand(7000, 9000));
             events.ScheduleEvent(EVENT_SPELL_CLEAVE, urand(12000, 15000));
-            events.ScheduleEvent(EVENT_COMBAT_UPDATE_AGGROLIST, 1000);
-            sWorld->SendWorldText(LANG_EVENTMESSAGE, "init");
-
         }
 
 
@@ -64,7 +58,6 @@ public:
             // Implement boss reset behavior
             Talk(SAY_EVADE);
             events.Reset();
-            sWorld->SendWorldText(LANG_EVENTMESSAGE, "reset");
         }
 
         void JustEngagedWith(Unit* /*who*/) override
@@ -72,7 +65,7 @@ public:
             Talk(SAY_ENGAGE);
             //ScriptedAI::JustEngagedWith(who);
             Initialize();
-            sWorld->SendWorldText(LANG_EVENTMESSAGE, "engaged");
+            
         }
 
         void UpdateAI(uint32 diff) override
@@ -131,36 +124,7 @@ public:
                 DoCastAOE(SPELL_CLEAVE, false);
                 events.RepeatEvent(urand(12000, 16000));
                 break;
-            case EVENT_COMBAT_UPDATE_AGGROLIST:
-                ThreatMgr threatManager = me->GetThreatMgr();
-
-
-                ThreatContainer::StorageType threatEntries = threatManager.GetThreatList();
-
-                for (const auto& threatEntry : threatEntries)
-
-                {
-                    //Player* myPlayer = threatEntry->GetSource()->SelectVictim()->ToPlayer();
-
-                    Player* myPlayer = threatEntry->getTarget()->ToPlayer();
-
-                    //Player* myPlayer = threatEntry->GetOwner()->ToPlayer();
-
-
-                    /*
-                    bool found = false;
-                    for (const auto& player : aggroList)
-                    {
-                        if (player == myPlayer) found = true;
-
-                    }
-
-                    if (!found) aggroList.push_front(myPlayer);
-
-                    */
-                }
-                events.RepeatEvent(1000);
-                break;
+           
 
             }
         }
@@ -170,17 +134,10 @@ public:
             // Implement boss death behavior
             Talk(SAY_DEATH);
             creepsAlive--;
-
-            for (Player* i : aggroList)
-            {
-                i->AddItem(250075, 100);
-            }
         }
 
     private:
         uint8 chargeCounter = 0;
-
-        std::list<Player*> aggroList;
 
     };
 
