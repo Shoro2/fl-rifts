@@ -25,6 +25,10 @@ void FLR_init() {
     eventActive = true;
     riftSpawned = true;
     sWorld->SendWorldText(LANG_EVENTMESSAGE, "A new rift has formed in the Land of Exobeast. Deafeat all waves of Demons and fight the big boss to receive additional loot!");
+
+
+
+
 }
 
 
@@ -79,9 +83,11 @@ public:
         // air: 80043, 80044, 80045, 80046 | 80048, 80049
         // water: 80031, 80032, 80033, 80037 | 80034, 80038
 
+        void SummonedCreatureDespawn(Creature* /*summon*/) override {
+            creepsAlive--;
+        }
 
-
-        void UpdateAI(uint32 /*diff*/) {
+        void UpdateAI(uint32 /*diff*/) override {
             if (sConfigMgr->GetOption<bool>("FLRifts.Enable", false) && eventActive) {
                 switch (waveNumber) {
                 case 0:
@@ -91,20 +97,20 @@ public:
                         {
                             posX = me->GetPositionX() + (rand() % 40 - 20);
                             posY = me->GetPositionY() + (rand() % 40 - 20);
-                            posZ = me->GetPositionZ()+5;
+                            posZ = (me->GetPositionZ())+5;
                             posO = me->GetOrientation();
                             switch (me->GetEntry()) {
                             case 90017:
-                                creatureList.push_front(me->SummonCreature(RAND(80027, 80028, 80029, 80035), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                                creatureList.push_front(me->SummonCreature(RAND(80027, 80028, 80029, 80035), posX, posY, posZ, posO, TEMPSUMMON_CORPSE_DESPAWN));
                                 break;
                             case 90016:
-                                creatureList.push_front(me->SummonCreature(RAND(80039, 80041, 80047, 80017), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                                creatureList.push_front(me->SummonCreature(RAND(80039, 80041, 80047, 80017), posX, posY, posZ, posO, TEMPSUMMON_CORPSE_DESPAWN));
                                 break;
                             case 90015:
-                                creatureList.push_front(me->SummonCreature(RAND(80031, 80032, 80033, 80037), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                                creatureList.push_front(me->SummonCreature(RAND(80031, 80032, 80033, 80037), posX, posY, posZ, posO, TEMPSUMMON_CORPSE_DESPAWN));
                                 break;
                             case 90014:
-                                creatureList.push_front(me->SummonCreature(RAND(80043, 80044, 80045, 80046), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                                creatureList.push_front(me->SummonCreature(RAND(80043, 80044, 80045, 80046), posX, posY, posZ, posO, TEMPSUMMON_CORPSE_DESPAWN));
                                 break;
                             default:
                                 break;
@@ -127,20 +133,20 @@ public:
                         {
                             posX = me->GetPositionX() + (rand() % 40 - 20);
                             posY = me->GetPositionY() + (rand() % 40 - 20);
-                            posZ = me->GetPositionZ();
+                            posZ = me->GetPositionZ() + 5;
                             posO = me->GetOrientation();
                             switch (me->GetEntry()) {
                             case 90017:
-                                creatureList.push_front(me->SummonCreature(RAND(80027, 80028, 80029, 80035), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                                creatureList.push_front(me->SummonCreature(RAND(80027, 80028, 80029, 80035), posX, posY, posZ, posO, TEMPSUMMON_CORPSE_DESPAWN));
                                 break;
                             case 90016:
-                                creatureList.push_front(me->SummonCreature(RAND(80039, 80041, 80047, 80017), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                                creatureList.push_front(me->SummonCreature(RAND(80039, 80041, 80047, 80017), posX, posY, posZ, posO, TEMPSUMMON_CORPSE_DESPAWN));
                                 break;
                             case 90015:
-                                creatureList.push_front(me->SummonCreature(RAND(80031, 80032, 80033, 80037), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                                creatureList.push_front(me->SummonCreature(RAND(80031, 80032, 80033, 80037), posX, posY, posZ, posO, TEMPSUMMON_CORPSE_DESPAWN));
                                 break;
                             case 90014:
-                                creatureList.push_front(me->SummonCreature(RAND(80043, 80044, 80045, 80046), posX, posY, posZ, posO, TEMPSUMMON_MANUAL_DESPAWN));
+                                creatureList.push_front(me->SummonCreature(RAND(80043, 80044, 80045, 80046), posX, posY, posZ, posO, TEMPSUMMON_CORPSE_DESPAWN));
                                 break;
                             default:
                                 break;
@@ -160,7 +166,7 @@ public:
                     if (creepsAlive == 0) {
                         posX = me->GetPositionX() + (rand() % 40 - 20);
                         posY = me->GetPositionY() + (rand() % 40 - 20);
-                        posZ = me->GetPositionZ();
+                        posZ = (me->GetPositionZ()) + 5;
                         posO = me->GetOrientation();
                         switch (me->GetEntry()) {
                         case 90017:
@@ -212,34 +218,7 @@ public:
     }
 };
 
-class FLRiftsCreatureTrash : public CreatureScript
-{
-public:
-    FLRiftsCreatureTrash() : CreatureScript("FLRiftsCreatureTrash") { }
 
-
-    struct FLRiftsCreatureTrashAI : public ScriptedAI {
-        FLRiftsCreatureTrashAI(Creature* creature) : ScriptedAI(creature)
-        {
-            // Constructor, define variables here
-        }
-
-
-        void JustDied(Unit* /*killer*/) override {
-            creepsAlive--;
-        }
-
-    private:
-        // Declare variables here
-
-
-    };
-
-    CreatureAI* GetAI(Creature* creature) const
-    {
-        return new FLRiftsCreatureTrashAI(creature);
-    }
-};
 
 class FLRiftsCreatureSpawner : public CreatureScript
 {
@@ -272,6 +251,7 @@ public:
                     riftSpawned = false;
                     me->m_Events.AddEvent(new DelayedRiftSpawn(), me->m_Events.CalculateTime(1800000));
                     // todo loot
+                    
                 }
             }
 
@@ -293,6 +273,5 @@ public:
 void AddFLRiftsScripts()
 {
     new FLRiftsCreatureRift();
-    new FLRiftsCreatureTrash();
     new FLRiftsCreatureSpawner();
 }
