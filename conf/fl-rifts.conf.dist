@@ -15,3 +15,39 @@
 #
 
 FLRifts.Enable = 0
+
+
+########################################
+# FLRifts NPC configuration
+########################################
+#	
+#	FLRifts.<npctype> = entry
+#
+
+FLRifts.shadow1 = 80027
+FLRifts.shadow2 = 80028
+FLRifts.shadow3 = 80029
+FLRifts.shadow4 = 80035
+FLRifts.shadowboss1 = 80036
+FLRifts.shadowboss2 = 80037
+
+FLRifts.fire1 = 80039
+FLRifts.fire2 = 80041
+FLRifts.fire3 = 80047
+FLRifts.fire4 = 80017
+FLRifts.fireboss1 = 80040
+FLRifts.fireboss1 = 80042
+
+FLRifts.air1 = 80031
+FLRifts.air2 = 80032
+FLRifts.air3 = 80033
+FLRifts.air4 = 80037
+FLRifts.airboss1 = 80034
+FLRifts.airboss2 = 80038
+
+FLRifts.water1 = 80043
+FLRifts.water2 = 80044
+FLRifts.water3 = 80045
+FLRifts.water4 = 80046
+FLRifts.waterboss1 = 80048
+FLRifts.waterboss2 = 80049

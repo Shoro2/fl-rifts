@@ -3,7 +3,6 @@
 #include "Config.h"
 #include "Chat.h"
 #include "ScriptedCreature.h"
-#include "fl-rifts/src/FLRifts.cpp"
 #include "SpellAuraEffects.h"
 #include "SpellScript.h"
 
@@ -133,7 +132,6 @@ public:
         {
             // Implement boss death behavior
             Talk(SAY_DEATH);
-            creepsAlive--;
         }
 
     private:
