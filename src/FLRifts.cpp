@@ -288,10 +288,16 @@ public:
                     onlyOnce = false;
                     // create rift
                     UpdateWorldState(me);
+                    /*
                     Map::PlayerList const& PlayerList = me->GetMap()->GetPlayers();
-                    if (!PlayerList.IsEmpty())
+                    if (!PlayerList.IsEmpty()){
+
                         for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
+                        {
                             i->GetSource()->PlayerTalkClass->SendPointOfInterest(1100);
+                        }
+                    }
+                    */
                     if (debug_flrifts) sWorld->SendWorldText(LANG_EVENTMESSAGE, "Query MySQL");
                     
                     QueryResult qr = WorldDatabase.Query("SELECT guid FROM creature WHERE id1 = 90018 ORDER BY RAND() LIMIT 1");
