@@ -102,11 +102,12 @@ public:
         }
 
         void SummonedCreatureDespawn(Creature* /*summon*/) override {
-            if (debug_flrifts) sWorld->SendWorldText(LANG_EVENTMESSAGE, "Killed trash");
+            if (debug_flrifts) sWorld->SendWorldText(LANG_EVENTMESSAGE, "Killed trash"); 
             creepsAlive--;
         }
 
         void summonRiftCreeps() {
+			LOG_DEBUG("scripts", "summonRiftCreeps()");
             posX = me->GetPositionX() + (rand() % 40 - 20);
             posY = me->GetPositionY() + (rand() % 40 - 20);
             posZ = me->GetPositionZ();
@@ -288,7 +289,6 @@ public:
                     onlyOnce = false;
                     // create rift
                     UpdateWorldState(me);
-                    /*
                     Map::PlayerList const& PlayerList = me->GetMap()->GetPlayers();
                     if (!PlayerList.IsEmpty()){
 
@@ -297,34 +297,38 @@ public:
                             i->GetSource()->PlayerTalkClass->SendPointOfInterest(1100);
                         }
                     }
-                    */
                     if (debug_flrifts) sWorld->SendWorldText(LANG_EVENTMESSAGE, "Query MySQL");
-                    
+                    LOG_DEBUG("scripts", "Query MySQL for spawner guid");
                     QueryResult qr = WorldDatabase.Query("SELECT guid FROM creature WHERE id1 = 90018 ORDER BY RAND() LIMIT 1");
+					if (!qr){
+						LOG_ERROR("scripts", "Error loading the query result 'SELECT guid FROM creature WHERE id1 = 90018 ORDER BY RAND() LIMIT 1'");
+					}
+					else{
+						uint32 targetGUID = (*qr)[0].Get<uint32>();
+						uint32 targetMap = me->GetMap()->GetId();
+						std::ostringstream ss;
+						ss << "guid: " << targetGUID << "map: " << targetMap;
+						sWorld->SendWorldText(LANG_EVENTMESSAGE, ss.str().c_str());
+						Creature* targetSummoner = ObjectAccessor::GetSpawnedCreatureByDBGUID(targetMap, targetGUID);
+						if (!targetSummoner) {
+							if (debug_flrifts) sWorld->SendWorldText(LANG_EVENTMESSAGE, "No Summoner");
+							onlyOnce = true;
+							return;
+						}
+						try {
+							riftCreature = targetSummoner->SummonCreature(90017, targetSummoner->GetPositionX(), targetSummoner->GetPositionY(), ((targetSummoner->GetPositionZ()) + 5), targetSummoner->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
+						}
+						catch (const std::exception& e) {
+							LOG_ERROR("scripts", "Error in FLRiftsCreatureSpawner:UpdateAI : % s", e.what());
+						}
+						if (debug_flrifts) sWorld->SendWorldText(LANG_EVENTMESSAGE, "Spawned Rift");
 
-                    uint32 targetGUID = (*qr)[0].Get<uint32>();
-                    uint32 targetMap = me->GetMap()->GetId();
-                    std::ostringstream ss;
-                    ss << "guid: " << targetGUID << "map: " << targetMap;
-                    sWorld->SendWorldText(LANG_EVENTMESSAGE, ss.str().c_str());
-                    Creature* targetSummoner = ObjectAccessor::GetSpawnedCreatureByDBGUID(targetMap, targetGUID);
-                    if (!targetSummoner) {
-                        if (debug_flrifts) sWorld->SendWorldText(LANG_EVENTMESSAGE, "No Summoner");
-                        onlyOnce = true;
-                        return;
-                    }
-                    try {
-                        riftCreature = targetSummoner->SummonCreature(90017, targetSummoner->GetPositionX(), targetSummoner->GetPositionY(), ((targetSummoner->GetPositionZ()) + 5), targetSummoner->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
-                    }
-                    catch (const std::exception& e) {
-                        LOG_ERROR("scripts", "Error in FLRiftsCreatureSpawner:UpdateAI : % s", e.what());
-                    }
-                    if (debug_flrifts) sWorld->SendWorldText(LANG_EVENTMESSAGE, "Spawned Rift");
-
-                    std::ostringstream sd;
-                    sd << "A new rift has formed, find it and defeat all waves of Demons and fight the big boss to receive additional loot!";
-                    sWorld->SendWorldText(LANG_EVENTMESSAGE, sd.str().c_str());
-                    FLR_init();
+						std::ostringstream sd;
+						sd << "A new rift has formed, find it and defeat all waves of Demons and fight the big boss to receive additional loot!";
+						sWorld->SendWorldText(LANG_EVENTMESSAGE, sd.str().c_str());
+						FLR_init();
+					}
+                    
 
 
                     
