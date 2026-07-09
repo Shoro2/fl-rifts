@@ -22,7 +22,7 @@ const uint32 WAVE_COUNTER_WORLD_STATE_ID = 1000;
 
 
 void FLR_init() {
-    if (debug_flrifts) sWorld->SendWorldText(LANG_EVENTMESSAGE, "init Rift");
+    if (debug_flrifts) ChatHandler(nullptr).SendWorldText(LANG_EVENTMESSAGE, "init Rift");
     //reset stuff
     creepsAlive = 0;
     waveNumber = 0;
@@ -39,7 +39,7 @@ public:
 
     bool Execute(uint64 /*eventTime*/, uint32 /*updateTime*/)
     {
-        if(debug_flrifts) sWorld->SendWorldText(LANG_EVENTMESSAGE, "DelayedRiftSpawn");
+        if(debug_flrifts) ChatHandler(nullptr).SendWorldText(LANG_EVENTMESSAGE, "DelayedRiftSpawn");
         waveNumber = 0;
         eventActive = true;
         return true;
@@ -55,7 +55,7 @@ public:
 
     bool Execute(uint64 /*eventTime*/, uint32 /*updateTime*/)
     {
-        if (debug_flrifts) sWorld->SendWorldText(LANG_EVENTMESSAGE, "DelayedWaveSpawn");
+        if (debug_flrifts) ChatHandler(nullptr).SendWorldText(LANG_EVENTMESSAGE, "DelayedWaveSpawn");
         waveNumber++;
         waiting = false;
         return true;
@@ -102,7 +102,7 @@ public:
         }
 
         void SummonedCreatureDespawn(Creature* /*summon*/) override {
-            if (debug_flrifts) sWorld->SendWorldText(LANG_EVENTMESSAGE, "Killed trash");
+            if (debug_flrifts) ChatHandler(nullptr).SendWorldText(LANG_EVENTMESSAGE, "Killed trash");
             creepsAlive--;
         }
 
@@ -158,7 +158,7 @@ public:
                 
                 switch (waveNumber) {
                 case 0:
-                    if (debug_flrifts) sWorld->SendWorldText(LANG_EVENTMESSAGE, "Spawning w1");
+                    if (debug_flrifts) ChatHandler(nullptr).SendWorldText(LANG_EVENTMESSAGE, "Spawning w1");
                     //start spawning
                     if (creepsAlive == 0) {
                         for (size_t i = 0; i < 10; i++)
@@ -222,7 +222,7 @@ public:
                 case 5:
                     //end event
                     if (creepsAlive == 0) {
-                        sWorld->SendWorldText(LANG_EVENTMESSAGE, "The Rift was closed, next one approaching in 30 minutes.");
+                        ChatHandler(nullptr).SendWorldText(LANG_EVENTMESSAGE, "The Rift was closed, next one approaching in 30 minutes.");
                         eventActive = false;
                         waveNumber++;
                     }
@@ -298,7 +298,7 @@ public:
                         }
                     }
                     */
-                    if (debug_flrifts) sWorld->SendWorldText(LANG_EVENTMESSAGE, "Query MySQL");
+                    if (debug_flrifts) ChatHandler(nullptr).SendWorldText(LANG_EVENTMESSAGE, "Query MySQL");
                     
                     QueryResult qr = WorldDatabase.Query("SELECT guid FROM creature WHERE id1 = 90018 ORDER BY RAND() LIMIT 1");
 
@@ -306,10 +306,10 @@ public:
                     uint32 targetMap = me->GetMap()->GetId();
                     std::ostringstream ss;
                     ss << "guid: " << targetGUID << "map: " << targetMap;
-                    sWorld->SendWorldText(LANG_EVENTMESSAGE, ss.str().c_str());
+                    ChatHandler(nullptr).SendWorldText(LANG_EVENTMESSAGE, ss.str().c_str());
                     Creature* targetSummoner = ObjectAccessor::GetSpawnedCreatureByDBGUID(targetMap, targetGUID);
                     if (!targetSummoner) {
-                        if (debug_flrifts) sWorld->SendWorldText(LANG_EVENTMESSAGE, "No Summoner");
+                        if (debug_flrifts) ChatHandler(nullptr).SendWorldText(LANG_EVENTMESSAGE, "No Summoner");
                         onlyOnce = true;
                         return;
                     }
@@ -319,11 +319,11 @@ public:
                     catch (const std::exception& e) {
                         LOG_ERROR("scripts", "Error in FLRiftsCreatureSpawner:UpdateAI : % s", e.what());
                     }
-                    if (debug_flrifts) sWorld->SendWorldText(LANG_EVENTMESSAGE, "Spawned Rift");
+                    if (debug_flrifts) ChatHandler(nullptr).SendWorldText(LANG_EVENTMESSAGE, "Spawned Rift");
 
                     std::ostringstream sd;
                     sd << "A new rift has formed, find it and defeat all waves of Demons and fight the big boss to receive additional loot!";
-                    sWorld->SendWorldText(LANG_EVENTMESSAGE, sd.str().c_str());
+                    ChatHandler(nullptr).SendWorldText(LANG_EVENTMESSAGE, sd.str().c_str());
                     FLR_init();
 
 
@@ -331,8 +331,8 @@ public:
                 }
                 else if (waveNumber == 6 && creepsAlive == 0 && riftSpawned) {
                     //clean rift
-                    if (debug_flrifts) sWorld->SendWorldText(LANG_EVENTMESSAGE, "Close Rift");
-                    riftCreature->DespawnOrUnsummon(0);
+                    if (debug_flrifts) ChatHandler(nullptr).SendWorldText(LANG_EVENTMESSAGE, "Close Rift");
+                    riftCreature->DespawnOrUnsummon(Milliseconds(0));
                     riftSpawned = false;
                     me->m_Events.AddEvent(new DelayedRiftSpawn(), me->m_Events.CalculateTime(1800000));
                     // todo loot

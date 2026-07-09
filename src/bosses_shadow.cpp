@@ -45,10 +45,10 @@ public:
         }
         void Initialize()
         {
-            events.ScheduleEvent(EVENT_SPELL_CHARGE, urand(9000, 11000));
-            events.ScheduleEvent(EVENT_SPELL_SILENCE, urand(18000, 22000));
-            events.ScheduleEvent(EVENT_SPELL_STRIKE, urand(7000, 9000));
-            events.ScheduleEvent(EVENT_SPELL_CLEAVE, urand(12000, 15000));
+            events.ScheduleEvent(EVENT_SPELL_CHARGE, Milliseconds(urand(9000, 11000)));
+            events.ScheduleEvent(EVENT_SPELL_SILENCE, Milliseconds(urand(18000, 22000)));
+            events.ScheduleEvent(EVENT_SPELL_STRIKE, Milliseconds(urand(7000, 9000)));
+            events.ScheduleEvent(EVENT_SPELL_CLEAVE, Milliseconds(urand(12000, 15000)));
         }
 
 
@@ -96,23 +96,23 @@ public:
                 }
                 if (chargeCounter > 5) {
                     chargeCounter++;
-                    events.RepeatEvent(500);
+                    events.Repeat(Milliseconds(500));
 
                 }
                 else {
                     chargeCounter = 0;
-                    events.RepeatEvent(20000);
+                    events.Repeat(Milliseconds(20000));
 
                 }
 
                 break;
             case EVENT_SPELL_SILENCE:
                 DoCastAOE(SPELL_SILENCE, false);
-                events.RepeatEvent(urand(18000, 21000));
+                events.Repeat(Milliseconds(urand(18000, 21000)));
                 break;
 
             case EVENT_SPELL_STRIKE:
-                events.RepeatEvent(urand(6000, 8000));
+                events.Repeat(Milliseconds(urand(6000, 8000)));
                 if (Unit* target = SelectTarget(SelectTargetMethod::MaxThreat, 0, 0, false))
                 {
                     me->CastSpell(target, SPELL_STRIKE, false);
@@ -121,7 +121,7 @@ public:
 
             case EVENT_SPELL_CLEAVE:
                 DoCastAOE(SPELL_CLEAVE, false);
-                events.RepeatEvent(urand(12000, 16000));
+                events.Repeat(Milliseconds(urand(12000, 16000)));
                 break;
            
 

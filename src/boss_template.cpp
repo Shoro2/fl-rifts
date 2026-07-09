@@ -60,16 +60,16 @@ public:
             switch (ph)
             {
             case PHASE_ONE:
-                events.ScheduleEvent(EVENT_SPELL_WINGBUFFET, urand(10000, 20000));
-                events.ScheduleEvent(EVENT_SPELL_FLAMEBREATH, urand(10000, 20000));
-                events.ScheduleEvent(EVENT_SPELL_TAILSWEEP, urand(15000, 20000));
-                events.ScheduleEvent(EVENT_SPELL_CLEAVE, urand(2000, 5000));
+                events.ScheduleEvent(EVENT_SPELL_WINGBUFFET, Milliseconds(urand(10000, 20000)));
+                events.ScheduleEvent(EVENT_SPELL_FLAMEBREATH, Milliseconds(urand(10000, 20000)));
+                events.ScheduleEvent(EVENT_SPELL_TAILSWEEP, Milliseconds(urand(15000, 20000)));
+                events.ScheduleEvent(EVENT_SPELL_CLEAVE, Milliseconds(urand(2000, 5000)));
                 break;
             case PHASE_TWO:
-                events.ScheduleEvent(EVENT_START_PHASE_2, 0);
+                events.ScheduleEvent(EVENT_START_PHASE_2, Milliseconds(0));
                 break;
             case PHASE_THREE:
-                events.ScheduleEvent(EVENT_START_PHASE_3, 5000);
+                events.ScheduleEvent(EVENT_START_PHASE_3, Milliseconds(5000));
                 break;
             }
         }
@@ -108,16 +108,16 @@ public:
             {
             case EVENT_SPELL_WINGBUFFET:
 
-                events.RepeatEvent(15000);
+                events.Repeat(Milliseconds(15000));
                 break;
             case EVENT_START_PHASE_2:
                 if (me->HasUnitFlag(UNIT_FLAG_DISARMED))
                 {
-                    events.RepeatEvent(5000);
+                    events.Repeat(Milliseconds(5000));
                 }
                 else
                 {
-                    events.RepeatEvent(urand(18000, 21000));
+                    events.Repeat(Milliseconds(urand(18000, 21000)));
                 }
                 break;
             }
