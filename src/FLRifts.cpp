@@ -6,10 +6,22 @@
 #include "Player.h"
 #include "Config.h"
 #include "Chat.h"
+#include "Containers.h"
 #include "ScriptedAI/ScriptedCreature.h"
 #include "Creature.h"
 #include "Map.h"
-#include "ObjectMgr.h"
+
+#include <vector>
+
+namespace
+{
+using Acore::Containers::SelectRandomContainerElement;
+
+constexpr uint32 NPC_SHADOW_RIFT = 90017;
+constexpr uint32 NPC_RIFT_SPAWN_LOCATION = 90018;
+constexpr uint32 RIFT_RETRY_DELAY_MS = 5000;
+constexpr uint32 RIFT_WAVE_SIZE = 10;
+}
 
 bool eventActive = false, riftSpawned = false, waiting = false, debug_flrifts = true, onlyOnce = true;
 float posX, posY, posZ, posO;
@@ -42,6 +54,7 @@ public:
         if(debug_flrifts) ChatHandler(nullptr).SendWorldText(LANG_EVENTMESSAGE, "DelayedRiftSpawn");
         waveNumber = 0;
         eventActive = true;
+        onlyOnce = true;
         return true;
     }
 
@@ -63,6 +76,16 @@ public:
 
 private:
 
+};
+
+class DelayedWaveRetry : public BasicEvent
+{
+public:
+    bool Execute(uint64 /*eventTime*/, uint32 /*updateTime*/) override
+    {
+        eventActive = true;
+        return true;
+    }
 };
 
 class FLRiftsCreatureRift : public CreatureScript
@@ -106,51 +129,115 @@ public:
             creepsAlive--;
         }
 
-        void summonRiftCreeps() {
-            posX = me->GetPositionX() + (rand() % 40 - 20);
-            posY = me->GetPositionY() + (rand() % 40 - 20);
-            posZ = me->GetPositionZ();
-            posO = me->GetOrientation();
-            uint8 npc_spawn_1, npc_spawn_2, npc_spawn_3, npc_spawn_4;
-            try {
-                switch (me->GetEntry()) {
-                case 90017: //shadow
-                    npc_spawn_1 = sConfigMgr->GetOption<uint8>("FLRifts.shadow1", 80027);
-                    npc_spawn_2 = sConfigMgr->GetOption<uint8>("FLRifts.shadow2", 80028);
-                    npc_spawn_3 = sConfigMgr->GetOption<uint8>("FLRifts.shadow3", 80029);
-                    npc_spawn_4 = sConfigMgr->GetOption<uint8>("FLRifts.shadow4", 80035); 
-                    break;
-                case 90016: //fire
-                    npc_spawn_1 = sConfigMgr->GetOption<uint8>("FLRifts.fire1", 80039);
-                    npc_spawn_2 = sConfigMgr->GetOption<uint8>("FLRifts.fire2", 80041);
-                    npc_spawn_3 = sConfigMgr->GetOption<uint8>("FLRifts.fire3", 80047);
-                    npc_spawn_4 = sConfigMgr->GetOption<uint8>("FLRifts.fire4", 80017);
-                    break;
-                case 90015: //air
-                    npc_spawn_1 = sConfigMgr->GetOption<uint8>("FLRifts.air1", 80031);
-                    npc_spawn_2 = sConfigMgr->GetOption<uint8>("FLRifts.air2", 80032);
-                    npc_spawn_3 = sConfigMgr->GetOption<uint8>("FLRifts.air3", 80033);
-                    npc_spawn_4 = sConfigMgr->GetOption<uint8>("FLRifts.air4", 80037);
+        bool SummonRiftCreep()
+        {
+            float summonX = me->GetPositionX() + (rand() % 40 - 20);
+            float summonY = me->GetPositionY() + (rand() % 40 - 20);
+            float summonZ = me->GetPositionZ();
+            float summonOrientation = me->GetOrientation();
+            uint32 npcSpawn1;
+            uint32 npcSpawn2;
+            uint32 npcSpawn3;
+            uint32 npcSpawn4;
 
+            switch (me->GetEntry())
+            {
+                case NPC_SHADOW_RIFT:
+                    npcSpawn1 = sConfigMgr->GetOption<uint32>(
+                        "FLRifts.shadow1", 80027);
+                    npcSpawn2 = sConfigMgr->GetOption<uint32>(
+                        "FLRifts.shadow2", 80028);
+                    npcSpawn3 = sConfigMgr->GetOption<uint32>(
+                        "FLRifts.shadow3", 80029);
+                    npcSpawn4 = sConfigMgr->GetOption<uint32>(
+                        "FLRifts.shadow4", 80035);
                     break;
-                case 90014: //water
-                    npc_spawn_1 = sConfigMgr->GetOption<uint8>("FLRifts.water1", 80043);
-                    npc_spawn_2 = sConfigMgr->GetOption<uint8>("FLRifts.water2", 80044);
-                    npc_spawn_3 = sConfigMgr->GetOption<uint8>("FLRifts.water3", 80045);
-                    npc_spawn_4 = sConfigMgr->GetOption<uint8>("FLRifts.water4", 80046);
+                case 90016: // fire
+                    npcSpawn1 = sConfigMgr->GetOption<uint32>(
+                        "FLRifts.fire1", 80039);
+                    npcSpawn2 = sConfigMgr->GetOption<uint32>(
+                        "FLRifts.fire2", 80041);
+                    npcSpawn3 = sConfigMgr->GetOption<uint32>(
+                        "FLRifts.fire3", 80047);
+                    npcSpawn4 = sConfigMgr->GetOption<uint32>(
+                        "FLRifts.fire4", 80017);
                     break;
-                }
-                riftSummon = me->SummonCreature(RAND(npc_spawn_1, npc_spawn_2, npc_spawn_3, npc_spawn_4), posX, posY, posZ, posO, TEMPSUMMON_CORPSE_DESPAWN);
-                summonFloorZ = riftSummon->GetFloorZ();
-                riftSummon->NearTeleportTo(riftSummon->GetPositionX(), riftSummon->GetPositionY(), summonFloorZ, false);
-                riftSummon->UpdateGroundPositionZ(riftSummon->GetPositionX(), riftSummon->GetPositionY(), summonFloorZ);
-                creepsAlive++;
-            }
-            catch (const std::exception& e) {
-                LOG_ERROR("scripts", "Error in summonRiftCreeps : % s", e.what());
+                case 90015: // air
+                    npcSpawn1 = sConfigMgr->GetOption<uint32>(
+                        "FLRifts.air1", 80031);
+                    npcSpawn2 = sConfigMgr->GetOption<uint32>(
+                        "FLRifts.air2", 80032);
+                    npcSpawn3 = sConfigMgr->GetOption<uint32>(
+                        "FLRifts.air3", 80033);
+                    npcSpawn4 = sConfigMgr->GetOption<uint32>(
+                        "FLRifts.air4", 80037);
+                    break;
+                case 90014: // water
+                    npcSpawn1 = sConfigMgr->GetOption<uint32>(
+                        "FLRifts.water1", 80043);
+                    npcSpawn2 = sConfigMgr->GetOption<uint32>(
+                        "FLRifts.water2", 80044);
+                    npcSpawn3 = sConfigMgr->GetOption<uint32>(
+                        "FLRifts.water3", 80045);
+                    npcSpawn4 = sConfigMgr->GetOption<uint32>(
+                        "FLRifts.water4", 80046);
+                    break;
+                default:
+                    LOG_ERROR("module.fl-rifts",
+                        "Rift creature entry {} has no wave configuration.",
+                        me->GetEntry());
+                    return false;
             }
 
-            
+            Creature* riftSummon = me->SummonCreature(
+                RAND(npcSpawn1, npcSpawn2, npcSpawn3, npcSpawn4),
+                summonX, summonY, summonZ, summonOrientation,
+                TEMPSUMMON_CORPSE_DESPAWN);
+            if (!riftSummon)
+                return false;
+
+            float summonFloorZ = riftSummon->GetFloorZ();
+            riftSummon->NearTeleportTo(
+                riftSummon->GetPositionX(), riftSummon->GetPositionY(),
+                summonFloorZ, false);
+            riftSummon->UpdateGroundPositionZ(
+                riftSummon->GetPositionX(), riftSummon->GetPositionY(),
+                summonFloorZ);
+            creepsAlive++;
+            return true;
+        }
+
+        bool SummonRiftWave()
+        {
+            uint32 summonedCount = 0;
+            for (uint32 i = 0; i < RIFT_WAVE_SIZE; ++i)
+                if (SummonRiftCreep())
+                    ++summonedCount;
+
+            if (!summonedCount)
+            {
+                LOG_ERROR("module.fl-rifts",
+                    "Failed to summon rift wave {} on map {}; "
+                    "retrying in {} ms.",
+                    waveNumber, me->GetMapId(), RIFT_RETRY_DELAY_MS);
+                return false;
+            }
+
+            if (summonedCount < RIFT_WAVE_SIZE)
+            {
+                LOG_WARN("module.fl-rifts",
+                    "Rift wave {} summoned only {} of {} creatures on map {}.",
+                    waveNumber, summonedCount, RIFT_WAVE_SIZE, me->GetMapId());
+            }
+
+            return true;
+        }
+
+        void ScheduleRiftRetry()
+        {
+            eventActive = false;
+            me->m_Events.AddEventAtOffset(
+                new DelayedWaveRetry(), Milliseconds(RIFT_RETRY_DELAY_MS));
         }
 
         void UpdateAI(uint32 /*diff*/) override {
@@ -161,10 +248,12 @@ public:
                     if (debug_flrifts) ChatHandler(nullptr).SendWorldText(LANG_EVENTMESSAGE, "Spawning w1");
                     //start spawning
                     if (creepsAlive == 0) {
-                        for (size_t i = 0; i < 10; i++)
+                        if (!SummonRiftWave())
                         {
-                            summonRiftCreeps();
+                            ScheduleRiftRetry();
+                            break;
                         }
+
                         waveNumber++;
                         UpdateWorldState(me);
                     }
@@ -177,10 +266,12 @@ public:
                     break;
                 case 2:
                     if (creepsAlive == 0) {
-                        for (size_t i = 0; i < 10; i++)
+                        if (!SummonRiftWave())
                         {
-                            summonRiftCreeps();
+                            ScheduleRiftRetry();
+                            break;
                         }
+
                         waveNumber++;
                         UpdateWorldState(me);
                     }
@@ -235,11 +326,6 @@ public:
         }
 
 
-
-    private:
-        // Declare variables here
-        float summonFloorZ;
-        Creature* riftSummon;
 
     };
 
@@ -298,27 +384,61 @@ public:
                         }
                     }
                     */
-                    if (debug_flrifts) ChatHandler(nullptr).SendWorldText(LANG_EVENTMESSAGE, "Query MySQL");
-                    
-                    QueryResult qr = WorldDatabase.Query("SELECT guid FROM creature WHERE id1 = 90018 ORDER BY RAND() LIMIT 1");
+                    std::vector<Creature*> spawnLocations;
+                    auto& loadedCreatures =
+                        me->GetMap()->GetCreatureBySpawnIdStore();
+                    for (auto const& pair : loadedCreatures)
+                    {
+                        Creature* spawnLocation = pair.second;
+                        if (!spawnLocation || !spawnLocation->IsAlive())
+                            continue;
 
-                    uint32 targetGUID = (*qr)[0].Get<uint32>();
-                    uint32 targetMap = me->GetMap()->GetId();
-                    std::ostringstream ss;
-                    ss << "guid: " << targetGUID << "map: " << targetMap;
-                    ChatHandler(nullptr).SendWorldText(LANG_EVENTMESSAGE, ss.str().c_str());
-                    Creature* targetSummoner = ObjectAccessor::GetSpawnedCreatureByDBGUID(targetMap, targetGUID);
-                    if (!targetSummoner) {
-                        if (debug_flrifts) ChatHandler(nullptr).SendWorldText(LANG_EVENTMESSAGE, "No Summoner");
-                        onlyOnce = true;
+                        if (spawnLocation->GetEntry() ==
+                            NPC_RIFT_SPAWN_LOCATION)
+                            spawnLocations.push_back(spawnLocation);
+                    }
+
+                    if (spawnLocations.empty())
+                    {
+                        LOG_ERROR("module.fl-rifts",
+                            "No loaded rift spawn location (entry {}) found on "
+                            "map {}; "
+                            "retrying in {} ms.",
+                            NPC_RIFT_SPAWN_LOCATION, me->GetMapId(),
+                            RIFT_RETRY_DELAY_MS);
+                        me->m_Events.AddEventAtOffset(
+                            new DelayedRiftSpawn(),
+                            Milliseconds(RIFT_RETRY_DELAY_MS));
                         return;
                     }
-                    try {
-                        riftCreature = targetSummoner->SummonCreature(90017, targetSummoner->GetPositionX(), targetSummoner->GetPositionY(), ((targetSummoner->GetPositionZ()) + 5), targetSummoner->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
+
+                    Creature* targetSummoner =
+                        SelectRandomContainerElement(spawnLocations);
+                    ObjectGuid::LowType targetSpawnId =
+                        targetSummoner->GetSpawnId();
+                    uint32 targetMapId = targetSummoner->GetMapId();
+                    LOG_DEBUG("module.fl-rifts",
+                        "Selected rift spawn {} on map {}.",
+                        targetSpawnId, targetMapId);
+                    riftCreature = targetSummoner->SummonCreature(
+                        NPC_SHADOW_RIFT,
+                        targetSummoner->GetPositionX(),
+                        targetSummoner->GetPositionY(),
+                        targetSummoner->GetPositionZ() + 5,
+                        targetSummoner->GetOrientation(),
+                        TEMPSUMMON_MANUAL_DESPAWN);
+                    if (!riftCreature)
+                    {
+                        LOG_ERROR("module.fl-rifts",
+                            "Failed to summon a rift at spawn {} on map {}; "
+                            "retrying in {} ms.",
+                            targetSpawnId, targetMapId, RIFT_RETRY_DELAY_MS);
+                        me->m_Events.AddEventAtOffset(
+                            new DelayedRiftSpawn(),
+                            Milliseconds(RIFT_RETRY_DELAY_MS));
+                        return;
                     }
-                    catch (const std::exception& e) {
-                        LOG_ERROR("scripts", "Error in FLRiftsCreatureSpawner:UpdateAI : % s", e.what());
-                    }
+
                     if (debug_flrifts) ChatHandler(nullptr).SendWorldText(LANG_EVENTMESSAGE, "Spawned Rift");
 
                     std::ostringstream sd;
