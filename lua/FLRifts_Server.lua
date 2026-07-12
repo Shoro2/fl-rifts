@@ -1,0 +1,2 @@
+-- Intentionally empty. C++ owns Rift state and sends authoritative addon
+-- messages; this file remains as a harmless replacement for older deployments.

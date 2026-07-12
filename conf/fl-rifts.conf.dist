@@ -9,7 +9,7 @@
 ########################################
 #
 #    FLRifts.Enable
-#        Description: Enable my module and print "Hello World" message at server start
+#        Description: Enable the repeating Forgotten Land Rift event.
 #        Default:     0 - Disabled
 #                     1 - Enabled
 #
@@ -20,7 +20,7 @@ FLRifts.Enable = 0
 ########################################
 # FLRifts NPC configuration
 ########################################
-#	
+#
 #	FLRifts.<npctype> = entry
 #
 
@@ -36,7 +36,7 @@ FLRifts.fire2 = 80041
 FLRifts.fire3 = 80047
 FLRifts.fire4 = 80017
 FLRifts.fireboss1 = 80040
-FLRifts.fireboss1 = 80042
+FLRifts.fireboss2 = 80042
 
 FLRifts.air1 = 80031
 FLRifts.air2 = 80032
