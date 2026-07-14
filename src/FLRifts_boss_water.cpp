@@ -8,7 +8,7 @@
 // damage-reduction bubble). Both mirror the Shadow boss rotation shape and are
 // Frost-school water.
 //
-// Ichyron's Rising Tide adds are self-contained helper creatures (entry 80052,
+// Ichyron's Rising Tide adds are self-contained helper creatures (entry 80176,
 // ScriptName npc_fl_water_globule): they swim to the boss and, on arrival, heal
 // it and vanish unless players kill them first. All spell IDs are stock 3.3.5a
 // NPC abilities (no custom DBC).
@@ -20,9 +20,9 @@
 
 enum WaterBossEntries
 {
-    NPC_WATER_BOSS_ICHYRON = 80048,
-    NPC_WATER_BOSS_NETHYS   = 80049,
-    NPC_WATER_GLOBULE       = 80052
+    NPC_WATER_BOSS_ICHYRON = 80034,
+    NPC_WATER_BOSS_NETHYS   = 80038,
+    NPC_WATER_GLOBULE       = 80176
 };
 
 enum WaterBossSpells

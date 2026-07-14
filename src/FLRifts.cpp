@@ -354,27 +354,27 @@ public:
                     npcSpawn3 = sConfigMgr->GetOption<uint32>(
                         "FLRifts.fire3", 80047);
                     npcSpawn4 = sConfigMgr->GetOption<uint32>(
-                        "FLRifts.fire4", 80050);
+                        "FLRifts.fire4", 80017);
                     break;
                 case NPC_AIR_RIFT:
                     npcSpawn1 = sConfigMgr->GetOption<uint32>(
-                        "FLRifts.air1", 80031);
+                        "FLRifts.air1", 80043);
                     npcSpawn2 = sConfigMgr->GetOption<uint32>(
-                        "FLRifts.air2", 80032);
+                        "FLRifts.air2", 80044);
                     npcSpawn3 = sConfigMgr->GetOption<uint32>(
-                        "FLRifts.air3", 80033);
+                        "FLRifts.air3", 80045);
                     npcSpawn4 = sConfigMgr->GetOption<uint32>(
-                        "FLRifts.air4", 80030);
+                        "FLRifts.air4", 80046);
                     break;
                 case NPC_WATER_RIFT:
                     npcSpawn1 = sConfigMgr->GetOption<uint32>(
-                        "FLRifts.water1", 80043);
+                        "FLRifts.water1", 80031);
                     npcSpawn2 = sConfigMgr->GetOption<uint32>(
-                        "FLRifts.water2", 80044);
+                        "FLRifts.water2", 80032);
                     npcSpawn3 = sConfigMgr->GetOption<uint32>(
-                        "FLRifts.water3", 80045);
+                        "FLRifts.water3", 80033);
                     npcSpawn4 = sConfigMgr->GetOption<uint32>(
-                        "FLRifts.water4", 80046);
+                        "FLRifts.water4", 80175);
                     break;
                 default:
                     LOG_ERROR("module.fl-rifts",
@@ -449,16 +449,16 @@ public:
                 case NPC_AIR_RIFT:
                     bossEntry = RAND(
                         sConfigMgr->GetOption<uint32>(
-                            "FLRifts.airboss1", 80034),
+                            "FLRifts.airboss1", 80048),
                         sConfigMgr->GetOption<uint32>(
-                            "FLRifts.airboss2", 80038));
+                            "FLRifts.airboss2", 80049));
                     break;
                 case NPC_WATER_RIFT:
                     bossEntry = RAND(
                         sConfigMgr->GetOption<uint32>(
-                            "FLRifts.waterboss1", 80048),
+                            "FLRifts.waterboss1", 80034),
                         sConfigMgr->GetOption<uint32>(
-                            "FLRifts.waterboss2", 80049));
+                            "FLRifts.waterboss2", 80038));
                     break;
                 default:
                     return false;

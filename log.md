@@ -1,5 +1,24 @@
 # Change log
 
+- `fix(Rifts): reconcile element entry map with the live FL DB` - The element
+  SQL/config/design targeted 80050/80030/80051/80052 and treated 80031-80034 as
+  Air / 80043-80049 as Water. Verified against the live `acore_world` (and the
+  original FL `update_world`): those entries are **real FL NPCs** — 80050 *Yorg
+  Stormheart* (a quest-giver for *The Exobeast*/*Chapter 1*), 80030 *Nil'un*,
+  80051 *Arcane Magical Anomaly* — so applying the SQL would have deleted them
+  and broken a quest chain; and the FL `[PH]` labels put 80031-80034/80038 on
+  Water, 80043-80046/80048-80049 on Air (the reverse). Re-targeted all element
+  content onto the FL `[PH] <element> Rift monster/boss` placeholders (which
+  already carry hostile faction 16, level 80/82, rank and display models),
+  corrected the Air/Water assignment, restored `fire4`=80017 (a valid FL Fire
+  slot; the earlier 80017→80050 "fix" was itself wrong), overrode 80038's stray
+  `boss_eloxin` binding (real Eloxin is 80067), and authored only three
+  genuinely-new creatures: Water support 80175, globule 80176, tornado 80177.
+  Updated `fl_rifts_elements.sql`, `fl-rifts.conf.dist`, the `FLRifts.cpp`
+  GetOption defaults, the `boss_fl_air`/`boss_fl_water` entry constants and
+  `docs/element-design.md`. Rebuilt worldserver clean (MSVC RelWithDebInfo,
+  0 errors/warnings; T1). DB apply + in-game verification pending.
+
 - `fix(Rifts): make element SQL CI-safe and auto-applied (data/sql/db-world)` -
   CI compiled the module but the worldserver dry-run failed because
   `Errors.log` listed "Script named 'X' is not assigned in the database" for all

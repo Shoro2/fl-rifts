@@ -12,16 +12,22 @@
 
 ## Element content (Fire / Water / Air)
 
-- (done) DB content authored in `sql/world/updates/2026_07_14_00_fl_rifts_elements.sql`:
-  boss ScriptName bindings, the reassigned Support mobs (80050/80030) and helper
-  NPCs (80051/80052) cloned from siblings, and trash + Support SmartAI. Apply on
-  the live DB and reconcile §4 if the trash already carry SmartAI.
-- (high) Build the module and test each element in game: confirm the spawner
-  opens Fire/Air/Water rifts, trash casts its element spells, the two bosses per
-  element run their rotation, and each signature fires (Fire flame patches, Air
-  tornado/stomp knockback, Water globule heal + interruptible Healing Wave).
-- (medium) Confirm the entry-ID fixes in game: air4 (80030) and shadowboss2
-  (80037) are distinct creatures; fire4 (80050) resolves to the Flamewaker
-  Zealot, not a stray 80017 creature.
+- (done) Entry map reconciled with the live FL DB — element content reuses the
+  FL `[PH] <element> Rift monster/boss` placeholders; three new creatures
+  (Water support 80175, globule 80176, tornado 80177). See
+  `docs/element-design.md` "Entry map — reconciled". Real NPCs (Yorg Stormheart
+  80050, Nil'un 80030, Arcane Magical Anomaly 80051) are untouched.
+- (done, T1) Build worldserver (MSVC RelWithDebInfo, `dcore_bin`) — clean.
+- (high) Apply `data/sql/db-world/base/fl_rifts_elements.sql` to the live
+  `acore_world`, boot worldserver, and confirm `Errors.log` stays at the 7-line
+  baseline (no "not assigned" / creature_template errors).
+- (high) Test each element in game: spawner opens Fire/Air/Water rifts, trash
+  casts its element spells, the two bosses per element run their rotation, and
+  each signature fires (Fire flame patches, Air tornado 80177 / Thundering Stomp
+  knockback, Water globule 80176 heal + interruptible Healing Wave).
+- (medium) QA the known tuning points: support friendly-targeting (Frenzy 19451
+  self-cast risk → Garr-Frenzy 19516 fallback; caster-class mobs may lack mana
+  for cost spells), placeholder displays on 80175/80176/80177, Protective Bubble
+  54306 flat reduction, and trash-spell / boss-rotation timers.
 - (low) Optional: recolor the AIO status bar per element (add an element field to
   the `WAVE|`/`COUNTDOWN|` addon message in `src/FLRifts.cpp` + `lua/`).

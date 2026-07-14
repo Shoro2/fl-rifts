@@ -7,7 +7,7 @@
 // airboss2 (Galewind) periodically knocks the whole melee cluster away. Both
 // mirror the Shadow boss rotation shape and are pure Nature-school lightning.
 //
-// The wandering tornado is a self-contained helper creature (entry 80051,
+// The wandering tornado is a self-contained helper creature (entry 80177,
 // ScriptName npc_fl_air_tornado) so no external NPC dependency is required.
 // All spell IDs are stock 3.3.5a NPC abilities (no custom DBC).
 
@@ -17,9 +17,9 @@
 
 enum AirBossEntries
 {
-    NPC_AIR_BOSS_STORMCALLER = 80034,
-    NPC_AIR_BOSS_GALEWIND     = 80038,
-    NPC_AIR_TORNADO           = 80051
+    NPC_AIR_BOSS_STORMCALLER = 80048,
+    NPC_AIR_BOSS_GALEWIND     = 80049,
+    NPC_AIR_TORNADO           = 80177
 };
 
 enum AirBossSpells

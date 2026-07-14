@@ -47,7 +47,7 @@ uses SmartAI. Bosses cast from their C++ `ScriptedAI`.
 | 1 · `fire1` 80039 | Emberforged Brute | Flame Breath `56908` (frontal cone) · Eruption `19497` (PBAoE when ≥3 in melee) |
 | 2 · `fire2` 80041 | Cinder Adept | Fireball `19391` (bolt) · Rain of Fire `19717` (ground AoE) |
 | 3 · `fire3` 80047 | Ashfang Harrier | Magma Shackles `19496` (AoE snare) · Immolate `20294` (DoT) · Flame Spear `19781` (bolt) |
-| 4 · `fire4` **80050** | Flamewaker Zealot | Frenzy `19451` (ally attack-haste) · Inspire `19779` (ally HoT) — SmartAI, friendly |
+| 4 · `fire4` **80017** | Flamewaker Zealot | Frenzy `19451` (ally attack-haste) · Inspire `19779` (ally HoT) — SmartAI, friendly |
 
 ### Bosses
 
@@ -67,10 +67,10 @@ ground-fire area spell.
 
 | Slot / Entry | Name | Spells |
 |---|---|---|
-| 1 · `air1` 80031 | Galecharged Marauder | Lightning Whirl `61915` (multi-strike) · Overload `61869` (PB nova when surrounded) |
-| 2 · `air2` 80032 | Tempest Caller | Lightning Bolt `53044` (bolt) · Chain Lightning `48140` (arc AoE) |
-| 3 · `air3` 80033 | Squallbinder | Chains of Ice `58464` (root/snare) · Static Overload `52658` (splash DoT+knock) · Lightning Bolt `53044` |
-| 4 · `air4` **80030** | Windsworn Zealot | Bloodlust `54516` (+35% ally haste) · Windfury Totem `65990` (optional) — SmartAI |
+| 1 · `air1` 80043 | Galecharged Marauder | Lightning Whirl `61915` (multi-strike) · Overload `61869` (PB nova when surrounded) |
+| 2 · `air2` 80044 | Tempest Caller | Lightning Bolt `53044` (bolt) · Chain Lightning `48140` (arc AoE) |
+| 3 · `air3` 80045 | Squallbinder | Chains of Ice `58464` (root/snare) · Static Overload `52658` (splash DoT+knock) · Lightning Bolt `53044` |
+| 4 · `air4` 80046 | Windsworn Zealot | Bloodlust `54516` (+35% ally haste) · Windfury Totem `65990` (optional) — SmartAI |
 
 > The Disruptor uses Chains of Ice rather than Cyclone `65859`: Cyclone grants the
 > player 6s of full invulnerability (wipes threat, shields raid damage). Keep
@@ -80,10 +80,10 @@ ground-fire area spell.
 
 | Entry | Name | Signature | Rotation |
 |---|---|---|---|
-| `airboss1` 80034 | Stormcaller Vaelryn | **Wandering Tornadoes** — summons mobile cyclone NPCs (`80051`) that chase players and knock them up | Charge `32323`+Stormhammer `62042` · Lightning Nova `52960` · Arc Lightning `52921` · Chain Lightning `62131` |
-| `airboss2` 80038 | Galewind Tempestarii | **Raid-wide knockback** — Thundering Stomp `60925` scatters melee, chained into a storm | Charge `32323` · Thundering Stomp `60925` · Lightning Nova `52960` · Lightning Bolt `53044` · Arc Lightning `52921` |
+| `airboss1` 80048 | Stormcaller Vaelryn | **Wandering Tornadoes** — summons mobile cyclone NPCs (`80177`) that chase players and knock them up | Charge `32323`+Stormhammer `62042` · Lightning Nova `52960` · Arc Lightning `52921` · Chain Lightning `62131` |
+| `airboss2` 80049 | Galewind Tempestarii | **Raid-wide knockback** — Thundering Stomp `60925` scatters melee, chained into a storm | Charge `32323` · Thundering Stomp `60925` · Lightning Nova `52960` · Lightning Bolt `53044` · Arc Lightning `52921` |
 
-The tornado (`80051`, ScriptName `npc_fl_air_tornado`) wanders randomly and pulses
+The tornado (`80177`, ScriptName `npc_fl_air_tornado`) wanders randomly and pulses
 Cyclone Strike `56855` (PB knockback) every ~1.5s for 15s.
 
 ## 🌊 Water — sustain: adds & interruptible heals (Frost school)
@@ -92,19 +92,19 @@ Cyclone Strike `56855` (PB knockback) every ~1.5s for 15s.
 
 | Slot / Entry | Name | Spells |
 |---|---|---|
-| 1 · `water1` 80043 | Tideguard Brute | Water Blast `54237` (ST frost+knockback) · Frost Nova `15532` (PB root when surrounded) |
-| 2 · `water2` 80044 | Abyssal Tide-caller | Frostbolt `15497` (bolt) · Water Bolt Volley `54241` (AoE) |
-| 3 · `water3` 80045 | Riptide Binder | Chains of Ice `58464` (snare) · Frost Shock `12548` (bolt+slow) |
-| 4 · `water4` 80046 | Coral Tidepriest | Chain Heal `54481` (ally heal) · Protective Bubble `54306` (ally shield) — SmartAI, friendly |
+| 1 · `water1` 80031 | Tideguard Brute | Water Blast `54237` (ST frost+knockback) · Frost Nova `15532` (PB root when surrounded) |
+| 2 · `water2` 80032 | Abyssal Tide-caller | Frostbolt `15497` (bolt) · Water Bolt Volley `54241` (AoE) |
+| 3 · `water3` 80033 | Riptide Binder | Chains of Ice `58464` (snare) · Frost Shock `12548` (bolt+slow) |
+| 4 · `water4` **80175** | Coral Tidepriest | Chain Heal `54481` (ally heal) · Protective Bubble `54306` (ally shield) — SmartAI, friendly |
 
 ### Bosses
 
 | Entry | Name | Signature | Rotation |
 |---|---|---|---|
-| `waterboss1` 80048 | Ichyron, the Drowning Tide | **Adds + geyser** — at 50% & every ~25s summons globule adds (`80052`) that heal the boss on arrival; Geyser `37478` knock-up | Water Blast `54237` · Water Bolt Volley `54241` · Frost Shock `12548` · Geyser `37478` · Frostbolt `15497` |
-| `waterboss2` 80049 | Nethys, Keeper of the Deep | **Interrupt check** — real-cast Healing Wave `12491` on self players must kick/silence, behind Protective Bubble `54306` | Water Blast `54237` · Frostbolt Volley `70759` · Frost Shock `12548` · Healing Wave `12491` · Protective Bubble `54306` |
+| `waterboss1` 80034 | Ichyron, the Drowning Tide | **Adds + geyser** — at 50% & every ~25s summons globule adds (`80176`) that heal the boss on arrival; Geyser `37478` knock-up | Water Blast `54237` · Water Bolt Volley `54241` · Frost Shock `12548` · Geyser `37478` · Frostbolt `15497` |
+| `waterboss2` 80038 | Nethys, Keeper of the Deep | **Interrupt check** — real-cast Healing Wave `12491` on self players must kick/silence, behind Protective Bubble `54306` | Water Blast `54237` · Frostbolt Volley `70759` · Frost Shock `12548` · Healing Wave `12491` · Protective Bubble `54306` |
 
-The globule (`80052`, ScriptName `npc_fl_water_globule`) swims to Ichyron and, on
+The globule (`80176`, ScriptName `npc_fl_water_globule`) swims to Ichyron and, on
 arrival, heals it for 5% max HP and vanishes — unless players kill it first.
 
 > Protective Bubble `54306` on a generic creature is a flat damage-reduction
@@ -113,15 +113,29 @@ arrival, heals it for 5% max HP and vanishes — unless players kill it first.
 
 ---
 
-## Entry-ID fixes
+## Entry map — reconciled with the live FL DB (2026-07-14)
 
-The original config had two problems, resolved here:
-- **`air4` `80037` → `80030`**: `80037` was also `shadowboss2`, so an Air wave
-  would have summoned a Shadow boss as trash.
-- **`fire4` `80017` → `80050`**: `80017` was the only entry outside the
-  `80027–80049` band.
+An earlier draft placed the element creatures on `80050 / 80030 / 80051 / 80052`
+and treated `80031-80034` as Air / `80043-80049` as Water. Verified against the
+live `acore_world` (and the original FL `update_world`), that map was wrong:
+those four "new" entries are **real FL NPCs** — `80050` *Yorg Stormheart* (a
+quest-giver for *The Exobeast* / *Chapter 1*), `80030` *Nil'un*, `80051` *Arcane
+Magical Anomaly* — and the FL `[PH]` labels put `80031-80034/80038` on **Water**,
+`80043-80046/80048-80049` on **Air** (the reverse of the draft).
 
-Both reassigned Support mobs (`80050`, `80030`) are new creatures to author.
+The content is unchanged; it now reuses the FL `[PH] <element> Rift monster/boss`
+placeholders (which already carry hostile faction 16, level 80/82, rank and
+display models) and adds only the three genuinely-new creatures:
+
+| Element | trash 1-4 | bosses | helper |
+|---|---|---|---|
+| 🔥 Fire (rift 90016) | 80039 · 80041 · 80047 · **80017** | 80040 · 80042 | — |
+| 🌊 Water (rift 90014) | 80031 · 80032 · 80033 · **80175** (new) | 80034 · 80038 | globule **80176** (new) |
+| 💨 Air (rift 90015) | 80043 · 80044 · 80045 · 80046 | 80048 · 80049 | tornado **80177** (new) |
+
+`80038` ("[PH] Water Rift boss 2") carried a stray `boss_eloxin` ScriptName; the
+real Eloxin boss is `80067`, so `80038` is overridden to `boss_fl_water` safely.
+`80037` stays untouched (it is `shadowboss2` in the Shadow config).
 
 ## Implementation status
 
@@ -131,12 +145,15 @@ Both reassigned Support mobs (`80050`, `80030`) are new creatures to author.
 | Config entry fixes + element toggles | `conf/fl-rifts.conf.dist` | ✅ code |
 | Fire / Air / Water boss AIs + helper NPCs | `src/FLRifts_boss_{fire,air,water}.cpp`, loader | ✅ code |
 | Boss ScriptName bindings | `data/sql/db-world/base/fl_rifts_elements.sql` | ✅ runnable |
-| New Support/helper creatures (clone-from-sibling), models | same SQL | ✅ runnable |
+| New creatures (80175/80176/80177) + models | same SQL | ✅ runnable |
 | Trash + Support abilities via SmartAI | same SQL | ✅ runnable¹ |
-| Build + in-game verification | per module workflow | ⬜ pending |
+| Entry map reconciled with live FL DB | SQL + conf + `FLRifts.cpp` defaults | ✅ code |
+| Build (MSVC RelWithDebInfo, `dcore_bin`) | operator box | ✅ T1 clean |
+| DB apply + boot Errors.log check | live `acore_world` | ⬜ pending |
+| In-game verification per element | live FL server | ⬜ pending (operator eyes) |
 
-¹ The Fire/Air/Water trash (80031–80047) carry no existing SmartAI or C++ script
-(confirmed), so §4 of the SQL authors it fresh.
+¹ The reused Fire/Water/Air `[PH]` trash slots carry no existing SmartAI or C++
+script (confirmed), so §4 of the SQL authors it fresh.
 
 The C++ compiles as a self-contained module (auto-globbed `src/*.cpp`); the boss
 signature helpers degrade gracefully if their helper NPC rows are missing
