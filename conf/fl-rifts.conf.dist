@@ -18,10 +18,31 @@ FLRifts.Enable = 0
 
 
 ########################################
+# FLRifts element eligibility
+########################################
+#
+#    FLRifts.Element.<element>
+#        Description: Whether this element may be chosen when a new Rift opens.
+#                     A random eligible element is picked each time. If none are
+#                     enabled the event falls back to Shadow.
+#        Default:     1 - Eligible
+#                     0 - Excluded
+#
+
+FLRifts.Element.Shadow = 1
+FLRifts.Element.Fire   = 1
+FLRifts.Element.Air    = 1
+FLRifts.Element.Water  = 1
+
+
+########################################
 # FLRifts NPC configuration
 ########################################
 #
 #	FLRifts.<npctype> = entry
+#
+#	Trash slots 1-4 map to the archetypes: 1 = Melee Bruiser, 2 = Caster,
+#	3 = Disruptor, 4 = Support. bossN entries are picked at random per event.
 #
 
 FLRifts.shadow1 = 80027
@@ -34,14 +55,14 @@ FLRifts.shadowboss2 = 80037
 FLRifts.fire1 = 80039
 FLRifts.fire2 = 80041
 FLRifts.fire3 = 80047
-FLRifts.fire4 = 80017
+FLRifts.fire4 = 80050
 FLRifts.fireboss1 = 80040
 FLRifts.fireboss2 = 80042
 
 FLRifts.air1 = 80031
 FLRifts.air2 = 80032
 FLRifts.air3 = 80033
-FLRifts.air4 = 80037
+FLRifts.air4 = 80030
 FLRifts.airboss1 = 80034
 FLRifts.airboss2 = 80038
 

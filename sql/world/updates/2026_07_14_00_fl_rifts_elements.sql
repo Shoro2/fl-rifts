@@ -1,0 +1,83 @@
+-- ============================================================================
+-- fl-rifts — Fire / Water / Air element content
+-- ============================================================================
+-- Wires the three new element boss AIs (C++ scripts boss_fl_fire / boss_fl_air /
+-- boss_fl_water, plus the helper NPCs npc_fl_air_tornado / npc_fl_water_globule)
+-- to their creature_template entries, and documents the trash abilities and the
+-- new support/helper creatures the design introduces.
+--
+-- RUNNABLE section (safe): only sets ScriptName on entries that already exist
+-- from the Forgotten Land content migration. Without it the new C++ boss AIs
+-- never bind and the element bosses just melee.
+--
+-- SCAFFOLD section (commented): the trash spell loadouts, the two reassigned
+-- support creatures (fire4 80050, air4 80030) and the two helper NPCs (tornado
+-- 80051, globule 80052). These need reconciliation against the live world DB
+-- (display IDs, faction, stats, and any existing SmartAI on the trash entries)
+-- before they are applied — do NOT run blind. All spell IDs are stock 3.3.5a
+-- NPC abilities, verified against the on-disk AzerothCore scripts.
+-- ============================================================================
+
+-- ---------------------------------------------------------------------------
+-- RUNNABLE: bind the element boss AIs
+-- ---------------------------------------------------------------------------
+UPDATE `creature_template` SET `ScriptName` = 'boss_fl_fire'  WHERE `entry` IN (80040, 80042);
+UPDATE `creature_template` SET `ScriptName` = 'boss_fl_air'   WHERE `entry` IN (80034, 80038);
+UPDATE `creature_template` SET `ScriptName` = 'boss_fl_water' WHERE `entry` IN (80048, 80049);
+
+-- ---------------------------------------------------------------------------
+-- SCAFFOLD (reconcile against the live world DB before applying)
+-- ---------------------------------------------------------------------------
+-- Trash abilities via creature_template_spell (default AI auto-casts index 0-7
+-- on the current target). Apply only after confirming the entry has no existing
+-- SmartAI casting the same abilities. Bruiser "burst when surrounded" and every
+-- Support heal/buff need SmartAI instead (see notes at the bottom).
+--
+-- FIRE trash
+-- DELETE FROM `creature_template_spell` WHERE `CreatureID` IN (80039,80041,80047);
+-- INSERT INTO `creature_template_spell` (`CreatureID`,`Index`,`Spell`) VALUES
+--   (80039,0,56908),                 -- Emberforged Brute: Flame Breath (cone)
+--   (80041,0,19391),(80041,1,19717), -- Cinder Adept: Fireball + Rain of Fire
+--   (80047,0,20294),(80047,1,19781),(80047,2,19496); -- Ashfang Harrier: Immolate + Flame Spear + Magma Shackles
+--
+-- AIR trash
+-- DELETE FROM `creature_template_spell` WHERE `CreatureID` IN (80031,80032,80033);
+-- INSERT INTO `creature_template_spell` (`CreatureID`,`Index`,`Spell`) VALUES
+--   (80031,0,61915),(80031,1,61869), -- Galecharged Marauder: Lightning Whirl + Overload
+--   (80032,0,53044),(80032,1,48140), -- Tempest Caller: Lightning Bolt + Chain Lightning
+--   (80033,0,58464),(80033,1,52658),(80033,2,53044); -- Squallbinder: Chains of Ice + Static Overload + Lightning Bolt
+--
+-- WATER trash
+-- DELETE FROM `creature_template_spell` WHERE `CreatureID` IN (80043,80044,80045);
+-- INSERT INTO `creature_template_spell` (`CreatureID`,`Index`,`Spell`) VALUES
+--   (80043,0,54237),(80043,1,15532), -- Tideguard Brute: Water Blast + Frost Nova
+--   (80044,0,15497),(80044,1,54241), -- Abyssal Tide-caller: Frostbolt + Water Bolt Volley
+--   (80045,0,58464),(80045,1,12548); -- Riptide Binder: Chains of Ice + Frost Shock
+--
+-- ---------------------------------------------------------------------------
+-- New creatures introduced by the design. Replace the placeholder
+-- CreatureDisplayID / faction / stats with values reconciled against the FL DB.
+-- fire4 (80050) and air4 (80030) are the reassigned Support-archetype trash that
+-- resolve the old air4=80037 collision with shadowboss2 and the fire4=80017
+-- outlier. 80051/80052 are the boss signature helpers.
+-- ---------------------------------------------------------------------------
+-- INSERT INTO `creature_template`
+--   (`entry`,`name`,`subname`,`minlevel`,`maxlevel`,`faction`,`unit_class`,`rank`,`AIName`,`ScriptName`) VALUES
+--   (80050,'Flamewaker Zealot',   'Fire Rift', 80,80,14,2,0,'SmartAI',''),
+--   (80030,'Windsworn Zealot',    'Air Rift',  80,80,14,2,0,'SmartAI',''),
+--   (80051,'Raging Tornado',      NULL,        80,80,14,1,0,'',   'npc_fl_air_tornado'),
+--   (80052,'Rising Tide Globule', NULL,        80,80,14,1,0,'',   'npc_fl_water_globule');
+-- INSERT INTO `creature_template_model` (`CreatureID`,`Idx`,`CreatureDisplayID`,`Probability`) VALUES
+--   (80050,0,/*TODO fire priest display*/0,1),
+--   (80030,0,/*TODO air priest display*/0,1),
+--   (80051,0,/*TODO tornado display, e.g. cyclone*/0,1),
+--   (80052,0,/*TODO water globule display*/0,1);
+--
+-- SmartAI notes (author against smart_scripts once the entries exist):
+--   80050 Flamewaker Zealot (Support): cast Frenzy 19451 on a random friendly
+--         every ~15s and Inspire 19779 (ally HoT) on the lowest-HP friendly.
+--   80030 Windsworn Zealot  (Support): cast Bloodlust 54516 (party haste) on
+--         cooldown; optionally Windfury Totem 65990.
+--   80039/80043 Bruiser: cast the point-blank nova (Eruption 19497 / Frost Nova
+--         15532) only when >=3 players are within ~8yd (SMART_TARGET count gate).
+-- ============================================================================

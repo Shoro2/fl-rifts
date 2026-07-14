@@ -5,6 +5,9 @@
 // From SC
 void AddFLRiftsScripts();
 void AddSC_BossShadowScript();
+void AddSC_BossFireScript();
+void AddSC_BossAirScript();
+void AddSC_BossWaterScript();
 
 // Add all
 // cf. the naming convention https://github.com/azerothcore/azerothcore-wotlk/blob/master/doc/changelog/master.md#how-to-upgrade-4
@@ -13,5 +16,8 @@ void Addfl_riftsScripts()
 {
     AddFLRiftsScripts();
     AddSC_BossShadowScript();
+    AddSC_BossFireScript();
+    AddSC_BossAirScript();
+    AddSC_BossWaterScript();
 }
 

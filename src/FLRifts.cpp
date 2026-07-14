@@ -612,9 +612,23 @@ public:
                 return;
             }
 
+            std::vector<uint32> riftEntries;
+            if (sConfigMgr->GetOption<bool>("FLRifts.Element.Shadow", true))
+                riftEntries.push_back(NPC_SHADOW_RIFT);
+            if (sConfigMgr->GetOption<bool>("FLRifts.Element.Fire", true))
+                riftEntries.push_back(NPC_FIRE_RIFT);
+            if (sConfigMgr->GetOption<bool>("FLRifts.Element.Air", true))
+                riftEntries.push_back(NPC_AIR_RIFT);
+            if (sConfigMgr->GetOption<bool>("FLRifts.Element.Water", true))
+                riftEntries.push_back(NPC_WATER_RIFT);
+            if (riftEntries.empty())
+                riftEntries.push_back(NPC_SHADOW_RIFT);
+
+            uint32 riftEntry = SelectRandomContainerElement(riftEntries);
+
             Creature* target = SelectRandomContainerElement(spawnLocations);
             Creature* rift = target->SummonCreature(
-                NPC_SHADOW_RIFT, target->GetPositionX(),
+                riftEntry, target->GetPositionX(),
                 target->GetPositionY(), target->GetPositionZ() + 5.0f,
                 target->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
             if (!rift)
