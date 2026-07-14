@@ -130,7 +130,7 @@ Both reassigned Support mobs (`80050`, `80030`) are new creatures to author.
 | Random element per Rift | `src/FLRifts.cpp` `SpawnRift()` + `FLRifts.Element.*` config | ✅ code |
 | Config entry fixes + element toggles | `conf/fl-rifts.conf.dist` | ✅ code |
 | Fire / Air / Water boss AIs + helper NPCs | `src/FLRifts_boss_{fire,air,water}.cpp`, loader | ✅ code |
-| Boss ScriptName bindings | `sql/world/updates/2026_07_14_00_fl_rifts_elements.sql` | ✅ runnable |
+| Boss ScriptName bindings | `data/sql/db-world/base/fl_rifts_elements.sql` | ✅ runnable |
 | New Support/helper creatures (clone-from-sibling), models | same SQL | ✅ runnable |
 | Trash + Support abilities via SmartAI | same SQL | ✅ runnable¹ |
 | Build + in-game verification | per module workflow | ⬜ pending |

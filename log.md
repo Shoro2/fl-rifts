@@ -1,5 +1,21 @@
 # Change log
 
+- `fix(Rifts): make element SQL CI-safe and auto-applied (data/sql/db-world)` -
+  CI compiled the module but the worldserver dry-run failed because
+  `Errors.log` listed "Script named 'X' is not assigned in the database" for all
+  registered scripts (including the pre-existing `boss_shadow` /
+  `FLRiftsCreatureRift` / `FLRiftsCreatureSpawner` — master was already red on
+  this check). Cause: CI applies module SQL only from
+  `modules/<name>/data/sql/db-world/` (`UpdateFetcher.cpp`), but the module
+  shipped SQL under the legacy `sql/world/` which modern dbimport never applies.
+  Consolidated all element DB content into
+  `data/sql/db-world/base/fl_rifts_elements.sql` (applied on both stock CI and
+  the FL server): `INSERT IGNORE` stubs (faction 14, class 1, display 11686) for
+  the FL-resident entries so a stock DB boots clean, explicit defs for the new
+  creatures (80050/80030/80051/80052), all ScriptName assignments, and the
+  trash/support SmartAI. On the FL DB the stubs no-op and real data wins.
+  Removed the old `sql/world/updates/2026_07_14_00_fl_rifts_elements.sql`.
+
 - `fix(Rifts): harden element AIs from adversarial review` - Multi-agent
   verification pass over the new C++/SQL/logic (checked against the live
   AzerothCore headers/schema) confirmed two gameplay bugs, now fixed:
