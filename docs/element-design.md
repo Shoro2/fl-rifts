@@ -132,12 +132,11 @@ Both reassigned Support mobs (`80050`, `80030`) are new creatures to author.
 | Fire / Air / Water boss AIs + helper NPCs | `src/FLRifts_boss_{fire,air,water}.cpp`, loader | ✅ code |
 | Boss ScriptName bindings | `sql/world/updates/2026_07_14_00_fl_rifts_elements.sql` | ✅ runnable |
 | New Support/helper creatures (clone-from-sibling), models | same SQL | ✅ runnable |
-| Trash + Support abilities via SmartAI | same SQL (assumes trash are blank placeholders) | ✅ runnable¹ |
+| Trash + Support abilities via SmartAI | same SQL | ✅ runnable¹ |
 | Build + in-game verification | per module workflow | ⬜ pending |
 
-¹ The trash SmartAI (§4 of the SQL) assumes the Fire/Air/Water trash carry no
-existing SmartAI. If the live FL DB already scripts those entries, merge that
-section rather than applying it wholesale.
+¹ The Fire/Air/Water trash (80031–80047) carry no existing SmartAI or C++ script
+(confirmed), so §4 of the SQL authors it fresh.
 
 The C++ compiles as a self-contained module (auto-globbed `src/*.cpp`); the boss
 signature helpers degrade gracefully if their helper NPC rows are missing

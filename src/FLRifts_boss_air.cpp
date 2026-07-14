@@ -189,8 +189,10 @@ public:
                     break;
                 case EVENT_THUNDERING_STOMP:
                     DoCastAOE(SPELL_THUNDERING_STOMP);
-                    // chase the scatter with a storm pulse
-                    events.ScheduleEvent(EVENT_LIGHTNING_NOVA, Milliseconds(1500));
+                    // chase the scatter with a storm pulse; Reschedule (not
+                    // Schedule) so the self-repeating Nova keeps a single timer
+                    // instead of stacking one extra cycle per stomp.
+                    events.RescheduleEvent(EVENT_LIGHTNING_NOVA, Milliseconds(1500));
                     events.Repeat(Milliseconds(urand(18000, 22000)));
                     break;
                 case EVENT_LIGHTNING_BOLT:

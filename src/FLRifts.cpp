@@ -354,7 +354,7 @@ public:
                     npcSpawn3 = sConfigMgr->GetOption<uint32>(
                         "FLRifts.fire3", 80047);
                     npcSpawn4 = sConfigMgr->GetOption<uint32>(
-                        "FLRifts.fire4", 80017);
+                        "FLRifts.fire4", 80050);
                     break;
                 case NPC_AIR_RIFT:
                     npcSpawn1 = sConfigMgr->GetOption<uint32>(
@@ -364,7 +364,7 @@ public:
                     npcSpawn3 = sConfigMgr->GetOption<uint32>(
                         "FLRifts.air3", 80033);
                     npcSpawn4 = sConfigMgr->GetOption<uint32>(
-                        "FLRifts.air4", 80037);
+                        "FLRifts.air4", 80030);
                     break;
                 case NPC_WATER_RIFT:
                     npcSpawn1 = sConfigMgr->GetOption<uint32>(

@@ -1,5 +1,16 @@
 # Change log
 
+- `fix(Rifts): harden element AIs from adversarial review` - Multi-agent
+  verification pass over the new C++/SQL/logic (checked against the live
+  AzerothCore headers/schema) confirmed two gameplay bugs, now fixed:
+  (1) Galewind (airboss2) re-scheduled the already self-repeating Lightning Nova
+  via `ScheduleEvent` on every Thundering Stomp — EventMap is a no-dedupe
+  multimap, so Nova cycles stacked up over the fight; switched to
+  `RescheduleEvent`. (2) `SummonRiftCreep` still hardcoded the pre-fix config
+  defaults (`fire4` 80017, `air4` 80037) — an absent config key could summon
+  shadowboss2 (80037) as air trash or a non-existent 80017; defaults aligned to
+  80050 / 80030. No compile or dbimport issues were found.
+
 - `feat(Rifts): Design + wire Fire/Water/Air elements` - Added the non-Shadow
   Rift elements. The spawner (`src/FLRifts.cpp` `SpawnRift`) now picks a random
   eligible element rift (90014-90017) instead of always Shadow, gated by new

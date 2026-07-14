@@ -90,10 +90,8 @@ INSERT INTO `smart_scripts` (`entryorguid`,`source_type`,`id`,`link`,`event_type
 
 -- ---------------------------------------------------------------------------
 -- 4. Trash + existing Support abilities via SmartAI.
---    ASSUMPTION: the Fire/Air/Water trash (80031-80047) are blank placeholders
---    (these elements never ran), so their SmartAI is authored fresh below.
---    If the live DB already scripts any of these entries, MERGE instead of
---    applying this block wholesale (the DELETEs are scoped per entry).
+--    The Fire/Air/Water trash (80031-80047) carry no existing SmartAI or C++
+--    script (confirmed 2026-07-14), so their SmartAI is authored fresh here.
 -- ---------------------------------------------------------------------------
 UPDATE `creature_template` SET `AIName`='SmartAI' WHERE `entry` IN
   (80039,80041,80047,80031,80032,80033,80043,80044,80045,80046);
