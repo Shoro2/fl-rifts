@@ -12,11 +12,10 @@
 
 ## Element content (Fire / Water / Air)
 
-- (high) Author the DB content in `sql/world/updates/2026_07_14_00_fl_rifts_elements.sql`
-  scaffold against the live FL world DB: create the reassigned Support mobs
-  (fire4 80050, air4 80030) and the boss helper NPCs (tornado 80051, globule
-  80052) with real display IDs / faction / stats, and add the trash spell
-  loadouts + Support SmartAI (see `docs/element-design.md`).
+- (done) DB content authored in `sql/world/updates/2026_07_14_00_fl_rifts_elements.sql`:
+  boss ScriptName bindings, the reassigned Support mobs (80050/80030) and helper
+  NPCs (80051/80052) cloned from siblings, and trash + Support SmartAI. Apply on
+  the live DB and reconcile §4 if the trash already carry SmartAI.
 - (high) Build the module and test each element in game: confirm the spawner
   opens Fire/Air/Water rifts, trash casts its element spells, the two bosses per
   element run their rotation, and each signature fires (Fire flame patches, Air

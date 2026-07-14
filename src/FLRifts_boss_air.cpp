@@ -113,19 +113,19 @@ public:
 
         void JustEngagedWith(Unit* /*who*/) override
         {
-            events.ScheduleEvent(EVENT_AIR_CHARGE, urand(15000, 20000));
-            events.ScheduleEvent(EVENT_ARC_LIGHTNING, urand(8000, 10000));
-            events.ScheduleEvent(EVENT_LIGHTNING_NOVA, urand(18000, 22000));
+            events.ScheduleEvent(EVENT_AIR_CHARGE, Milliseconds(urand(15000, 20000)));
+            events.ScheduleEvent(EVENT_ARC_LIGHTNING, Milliseconds(urand(8000, 10000)));
+            events.ScheduleEvent(EVENT_LIGHTNING_NOVA, Milliseconds(urand(18000, 22000)));
 
             if (me->GetEntry() == NPC_AIR_BOSS_GALEWIND)
             {
-                events.ScheduleEvent(EVENT_THUNDERING_STOMP, urand(18000, 22000));
-                events.ScheduleEvent(EVENT_LIGHTNING_BOLT, urand(6000, 8000));
+                events.ScheduleEvent(EVENT_THUNDERING_STOMP, Milliseconds(urand(18000, 22000)));
+                events.ScheduleEvent(EVENT_LIGHTNING_BOLT, Milliseconds(urand(6000, 8000)));
             }
             else
             {
-                events.ScheduleEvent(EVENT_CHAIN_LIGHTNING, urand(10000, 13000));
-                events.ScheduleEvent(EVENT_SUMMON_TORNADO, urand(20000, 25000));
+                events.ScheduleEvent(EVENT_CHAIN_LIGHTNING, Milliseconds(urand(10000, 13000)));
+                events.ScheduleEvent(EVENT_SUMMON_TORNADO, Milliseconds(urand(20000, 25000)));
             }
         }
 
@@ -169,33 +169,33 @@ public:
                         if (me->GetEntry() == NPC_AIR_BOSS_STORMCALLER)
                             me->CastSpell(target, SPELL_STORMHAMMER, false);
                     }
-                    events.Repeat(urand(15000, 20000));
+                    events.Repeat(Milliseconds(urand(15000, 20000)));
                     break;
                 case EVENT_ARC_LIGHTNING:
                     DoCastRandomTarget(SPELL_ARC_LIGHTNING);
-                    events.Repeat(urand(8000, 10000));
+                    events.Repeat(Milliseconds(urand(8000, 10000)));
                     break;
                 case EVENT_LIGHTNING_NOVA:
                     DoCastAOE(SPELL_LIGHTNING_NOVA);
-                    events.Repeat(urand(18000, 22000));
+                    events.Repeat(Milliseconds(urand(18000, 22000)));
                     break;
                 case EVENT_CHAIN_LIGHTNING:
                     DoCastRandomTarget(SPELL_CHAIN_LIGHTNING);
-                    events.Repeat(urand(10000, 13000));
+                    events.Repeat(Milliseconds(urand(10000, 13000)));
                     break;
                 case EVENT_SUMMON_TORNADO:
                     SummonTornadoes();
-                    events.Repeat(urand(20000, 25000));
+                    events.Repeat(Milliseconds(urand(20000, 25000)));
                     break;
                 case EVENT_THUNDERING_STOMP:
                     DoCastAOE(SPELL_THUNDERING_STOMP);
                     // chase the scatter with a storm pulse
-                    events.ScheduleEvent(EVENT_LIGHTNING_NOVA, 1500);
-                    events.Repeat(urand(18000, 22000));
+                    events.ScheduleEvent(EVENT_LIGHTNING_NOVA, Milliseconds(1500));
+                    events.Repeat(Milliseconds(urand(18000, 22000)));
                     break;
                 case EVENT_LIGHTNING_BOLT:
                     DoCastVictim(SPELL_LIGHTNING_BOLT);
-                    events.Repeat(urand(6000, 8000));
+                    events.Repeat(Milliseconds(urand(6000, 8000)));
                     break;
                 default:
                     break;

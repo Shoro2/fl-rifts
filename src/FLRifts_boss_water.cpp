@@ -130,20 +130,20 @@ public:
 
         void JustEngagedWith(Unit* /*who*/) override
         {
-            events.ScheduleEvent(EVENT_WATER_BLAST, urand(9000, 11000));
-            events.ScheduleEvent(EVENT_FROST_SHOCK, urand(7000, 9000));
+            events.ScheduleEvent(EVENT_WATER_BLAST, Milliseconds(urand(9000, 11000)));
+            events.ScheduleEvent(EVENT_FROST_SHOCK, Milliseconds(urand(7000, 9000)));
 
             if (me->GetEntry() == NPC_WATER_BOSS_NETHYS)
             {
-                events.ScheduleEvent(EVENT_FROSTBOLT_VOLLEY, urand(12000, 15000));
-                events.ScheduleEvent(EVENT_HEALING_TIDE, urand(20000, 25000));
-                events.ScheduleEvent(EVENT_BUBBLE, urand(18000, 22000));
+                events.ScheduleEvent(EVENT_FROSTBOLT_VOLLEY, Milliseconds(urand(12000, 15000)));
+                events.ScheduleEvent(EVENT_HEALING_TIDE, Milliseconds(urand(20000, 25000)));
+                events.ScheduleEvent(EVENT_BUBBLE, Milliseconds(urand(18000, 22000)));
             }
             else
             {
-                events.ScheduleEvent(EVENT_WATER_BOLT_VOLLEY, urand(12000, 16000));
-                events.ScheduleEvent(EVENT_GEYSER, urand(12000, 15000));
-                events.ScheduleEvent(EVENT_FROSTBOLT, urand(5000, 7000));
+                events.ScheduleEvent(EVENT_WATER_BOLT_VOLLEY, Milliseconds(urand(12000, 16000)));
+                events.ScheduleEvent(EVENT_GEYSER, Milliseconds(urand(12000, 15000)));
+                events.ScheduleEvent(EVENT_FROSTBOLT, Milliseconds(urand(5000, 7000)));
             }
         }
 
@@ -155,7 +155,7 @@ public:
                 HealthBelowPct(50))
             {
                 _tideStarted = true;
-                events.ScheduleEvent(EVENT_RISING_TIDE, 1000);
+                events.ScheduleEvent(EVENT_RISING_TIDE, Milliseconds(1000));
             }
         }
 
@@ -187,43 +187,43 @@ public:
                     if (Unit* target = SelectTarget(
                         SelectTargetMethod::Random, 0, 0.0f, false))
                         me->CastSpell(target, SPELL_WATER_BLAST, false);
-                    events.Repeat(urand(9000, 11000));
+                    events.Repeat(Milliseconds(urand(9000, 11000)));
                     break;
                 case EVENT_WATER_BOLT_VOLLEY:
                     DoCastAOE(SPELL_WATER_BOLT_VOLLEY);
-                    events.Repeat(urand(12000, 16000));
+                    events.Repeat(Milliseconds(urand(12000, 16000)));
                     break;
                 case EVENT_FROST_SHOCK:
                     if (Unit* target = SelectTarget(
                         SelectTargetMethod::MaxThreat, 0, 0.0f, false))
                         me->CastSpell(target, SPELL_FROST_SHOCK, false);
-                    events.Repeat(urand(7000, 9000));
+                    events.Repeat(Milliseconds(urand(7000, 9000)));
                     break;
                 case EVENT_GEYSER:
                     DoCastRandomTarget(SPELL_GEYSER);
-                    events.Repeat(urand(12000, 15000));
+                    events.Repeat(Milliseconds(urand(12000, 15000)));
                     break;
                 case EVENT_FROSTBOLT:
                     DoCastVictim(SPELL_FROSTBOLT);
-                    events.Repeat(urand(5000, 7000));
+                    events.Repeat(Milliseconds(urand(5000, 7000)));
                     break;
                 case EVENT_RISING_TIDE:
                     SummonGlobules();
-                    events.Repeat(urand(23000, 27000));
+                    events.Repeat(Milliseconds(urand(23000, 27000)));
                     break;
                 case EVENT_FROSTBOLT_VOLLEY:
                     DoCastAOE(SPELL_FROSTBOLT_VOLLEY);
-                    events.Repeat(urand(12000, 15000));
+                    events.Repeat(Milliseconds(urand(12000, 15000)));
                     break;
                 case EVENT_HEALING_TIDE:
                     // non-triggered: keeps its cast time so players can
                     // interrupt/silence it.
                     DoCastSelf(SPELL_HEALING_WAVE, false);
-                    events.Repeat(urand(20000, 25000));
+                    events.Repeat(Milliseconds(urand(20000, 25000)));
                     break;
                 case EVENT_BUBBLE:
                     DoCastSelf(SPELL_PROTECTIVE_BUBBLE);
-                    events.Repeat(urand(18000, 22000));
+                    events.Repeat(Milliseconds(urand(18000, 22000)));
                     break;
                 default:
                     break;

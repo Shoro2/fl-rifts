@@ -68,19 +68,19 @@ public:
         {
             if (me->GetEntry() == NPC_FIRE_BOSS_CONFLAGRATOR)
             {
-                events.ScheduleEvent(EVENT_LIVING_BOMB, urand(10000, 13000));
-                events.ScheduleEvent(EVENT_INFERNO, urand(18000, 22000));
-                events.ScheduleEvent(EVENT_PYROBLAST, urand(8000, 11000));
-                events.ScheduleEvent(EVENT_FIREBALL, urand(5000, 7000));
-                events.ScheduleEvent(EVENT_FLAME_STRIKE, urand(14000, 16000));
+                events.ScheduleEvent(EVENT_LIVING_BOMB, Milliseconds(urand(10000, 13000)));
+                events.ScheduleEvent(EVENT_INFERNO, Milliseconds(urand(18000, 22000)));
+                events.ScheduleEvent(EVENT_PYROBLAST, Milliseconds(urand(8000, 11000)));
+                events.ScheduleEvent(EVENT_FIREBALL, Milliseconds(urand(5000, 7000)));
+                events.ScheduleEvent(EVENT_FLAME_STRIKE, Milliseconds(urand(14000, 16000)));
             }
             else
             {
-                events.ScheduleEvent(EVENT_FIRE_CHARGE, urand(9000, 11000));
-                events.ScheduleEvent(EVENT_FLAME_BREATH, urand(13000, 16000));
-                events.ScheduleEvent(EVENT_FIRE_CLEAVE, urand(7000, 9000));
-                events.ScheduleEvent(EVENT_FIREBALL, urand(5000, 7000));
-                events.ScheduleEvent(EVENT_SCORCH, urand(11000, 13000));
+                events.ScheduleEvent(EVENT_FIRE_CHARGE, Milliseconds(urand(9000, 11000)));
+                events.ScheduleEvent(EVENT_FLAME_BREATH, Milliseconds(urand(13000, 16000)));
+                events.ScheduleEvent(EVENT_FIRE_CLEAVE, Milliseconds(urand(7000, 9000)));
+                events.ScheduleEvent(EVENT_FIREBALL, Milliseconds(urand(5000, 7000)));
+                events.ScheduleEvent(EVENT_SCORCH, Milliseconds(urand(11000, 13000)));
             }
         }
 
@@ -106,39 +106,39 @@ public:
                         me->CastSpell(target, SPELL_FIRE_CHARGE, false);
                         me->CastSpell(target, SPELL_FIRE_KNOCKBACK, false);
                     }
-                    events.Repeat(urand(18000, 22000));
+                    events.Repeat(Milliseconds(urand(18000, 22000)));
                     break;
                 case EVENT_FLAME_BREATH:
                     DoCastVictim(SPELL_FLAME_BREATH);
-                    events.Repeat(urand(14000, 16000));
+                    events.Repeat(Milliseconds(urand(14000, 16000)));
                     break;
                 case EVENT_FIRE_CLEAVE:
                     DoCastVictim(SPELL_FIRE_CLEAVE);
-                    events.Repeat(urand(7000, 9000));
+                    events.Repeat(Milliseconds(urand(7000, 9000)));
                     break;
                 case EVENT_FIREBALL:
                     DoCastVictim(SPELL_FIREBALL);
-                    events.Repeat(urand(5000, 7000));
+                    events.Repeat(Milliseconds(urand(5000, 7000)));
                     break;
                 case EVENT_SCORCH:
                     DoCastRandomTarget(SPELL_SCORCH);
-                    events.Repeat(urand(11000, 13000));
+                    events.Repeat(Milliseconds(urand(11000, 13000)));
                     break;
                 case EVENT_LIVING_BOMB:
                     DoCastRandomTarget(SPELL_LIVING_BOMB);
-                    events.Repeat(urand(11000, 14000));
+                    events.Repeat(Milliseconds(urand(11000, 14000)));
                     break;
                 case EVENT_INFERNO:
                     DoCastSelf(SPELL_INFERNO);
-                    events.Repeat(urand(18000, 22000));
+                    events.Repeat(Milliseconds(urand(18000, 22000)));
                     break;
                 case EVENT_PYROBLAST:
                     DoCastVictim(SPELL_PYROBLAST);
-                    events.Repeat(urand(9000, 11000));
+                    events.Repeat(Milliseconds(urand(9000, 11000)));
                     break;
                 case EVENT_FLAME_STRIKE:
                     DoCastRandomTarget(SPELL_FLAME_STRIKE);
-                    events.Repeat(urand(14000, 16000));
+                    events.Repeat(Milliseconds(urand(14000, 16000)));
                     break;
                 default:
                     break;
