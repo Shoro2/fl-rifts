@@ -1,5 +1,29 @@
 # Change log
 
+- `fix(Rifts): Polish element combat` -
+  Replaced all configured Fire/Water/Air placeholder names plus Shadow boss 2,
+  made every Rift non-selectable, and set exact scales for Fire Rift (3.0),
+  Fire boss 2 (1.2) and Air boss 1 (1.05). Converted offensive casters,
+  supports and caster bosses to mana-bearing classes; ranged trash now keeps
+  18-yard distance. Trash kits are capped at one melee or at most two caster
+  abilities, Flame Breath remains only on the Fire brute at a longer cooldown,
+  and 80017's buffs explicitly target another friendly creature. Fire boss 1
+  no longer casts Flame Breath and now creates damaging stock Scorched Ground
+  `62548` at the selected player's real position, bypassing Ignis `62546`'s
+  Ulduar-only hard-coded elevation. Fire boss 2 owns a new non-selectable trap
+  `80178`: visual `44191` expires after five seconds, damage `44190` fires, and
+  all traps clean up on boss death/reset. Air tornadoes now pulse fixed Nature
+  damage plus knockback (`43121`) instead of weapon-percent spell `56855`.
+  Water globules move at half speed and heal 7.5% (up from 5%); Water boss 2
+  has mana and casts Protective Bubble at half the old frequency. Verified the
+  SQL in an isolated clone schema without mutating `acore_world`; names,
+  classes, flags, scales, scripts, ranged movement and 1/2-spell caps match.
+  `git diff --check` passes. The official C++ checker reports only pre-existing
+  issues in untouched `boss_template.cpp`, `FLRifts_bosses.cpp` and
+  `FLRifts_loader.cpp`; SQL content checks pass, with the intended `base/`
+  directory change requiring maintainer acknowledgement. Current evidence is
+  T0: build, live SQL apply and in-game verification remain pending.
+
 - `fix(Rifts): reconcile element entry map with the live FL DB` - The element
   SQL/config/design targeted 80050/80030/80051/80052 and treated 80031-80034 as
   Air / 80043-80049 as Water. Verified against the live `acore_world` (and the

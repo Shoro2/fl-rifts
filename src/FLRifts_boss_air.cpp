@@ -31,7 +31,9 @@ enum AirBossSpells
     SPELL_CHAIN_LIGHTNING   = 62131, // filler arc
     SPELL_THUNDERING_STOMP  = 60925, // signature: raid-wide knock-up
     SPELL_LIGHTNING_BOLT    = 53044, // single-target nuke
-    SPELL_TORNADO_KNOCK     = 56855  // tornado pulse (Cyclone Strike PB knock)
+    // Fixed Nature damage + knockback. Unlike 56855, this does not scale from
+    // the passive helper's effectively-zero weapon damage.
+    SPELL_TORNADO_PULSE     = 43121
 };
 
 enum AirBossEvents
@@ -78,7 +80,7 @@ public:
         {
             if (_pulseTimer <= diff)
             {
-                DoCastAOE(SPELL_TORNADO_KNOCK, true);
+                DoCastAOE(SPELL_TORNADO_PULSE, true);
                 _pulseTimer = TORNADO_PULSE_MS;
             }
             else

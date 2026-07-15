@@ -53,10 +53,12 @@ enum WaterBossEvents
 enum WaterBossMisc
 {
     GLOBULE_COUNT        = 3,
-    GLOBULE_HEAL_PCT     = 5,
+    GLOBULE_HEAL_PERMILLE = 75,
     GLOBULE_ARRIVE_DIST  = 4,
     GLOBULE_DURATION_MS  = 30000
 };
+
+constexpr float GLOBULE_SPEED_RATE = 0.5f;
 
 // -- Rising Tide globule helper ---------------------------------------------
 
@@ -72,6 +74,9 @@ public:
         void Reset() override
         {
             me->SetReactState(REACT_PASSIVE);
+            me->SetSpeedRate(MOVE_WALK, GLOBULE_SPEED_RATE);
+            me->SetSpeedRate(MOVE_RUN, GLOBULE_SPEED_RATE);
+            me->SetSpeedRate(MOVE_SWIM, GLOBULE_SPEED_RATE);
         }
 
         void IsSummonedBy(WorldObject* summoner) override
@@ -95,8 +100,9 @@ public:
 
             if (me->GetDistance(boss) <= float(GLOBULE_ARRIVE_DIST))
             {
-                boss->ModifyHealth(
-                    boss->CountPctFromMaxHealth(GLOBULE_HEAL_PCT));
+                uint32 heal = uint32(uint64(boss->GetMaxHealth()) *
+                    GLOBULE_HEAL_PERMILLE / 1000);
+                boss->ModifyHealth(heal);
                 me->DespawnOrUnsummon();
             }
         }
@@ -137,7 +143,8 @@ public:
             {
                 events.ScheduleEvent(EVENT_FROSTBOLT_VOLLEY, Milliseconds(urand(12000, 15000)));
                 events.ScheduleEvent(EVENT_HEALING_TIDE, Milliseconds(urand(20000, 25000)));
-                events.ScheduleEvent(EVENT_BUBBLE, Milliseconds(urand(18000, 22000)));
+                events.ScheduleEvent(EVENT_BUBBLE,
+                    Milliseconds(urand(36000, 44000)));
             }
             else
             {
@@ -223,7 +230,7 @@ public:
                     break;
                 case EVENT_BUBBLE:
                     DoCastSelf(SPELL_PROTECTIVE_BUBBLE);
-                    events.Repeat(Milliseconds(urand(18000, 22000)));
+                    events.Repeat(Milliseconds(urand(36000, 44000)));
                     break;
                 default:
                     break;

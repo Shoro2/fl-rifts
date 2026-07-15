@@ -41,9 +41,9 @@ the migrated content uses different IDs.
 
 ## Verification state
 
-The C++ build, Lua syntax check, local Windows deployment, matching deployed
-file hashes, listening world port, and empty new error log are verified. The
-compact top status bar is operator-confirmed in game. The marker,
-countdown-to-wave transition, live wave status, late-join synchronization,
-drag persistence, and clear flow still require an in-game test. See `todo.md`
-for the outstanding evidence steps.
+The prior element/UI revision was built and deployed on the Windows operator
+box, and the compact top status bar is operator-confirmed in game. The current
+combat-polish branch is T0 code-only until its updated C++ and
+`data/sql/db-world/base/fl_rifts_elements.sql` are built/applied. Rift lifecycle
+checks plus the tuned names, scales, mana roles, hazards and boss mechanics
+still require an in-game pass. See `todo.md` for the exact outstanding evidence.
