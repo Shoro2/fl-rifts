@@ -6,6 +6,7 @@
 #include "Config.h"
 #include "Containers.h"
 #include "Creature.h"
+#include "GameObject.h"
 #include "GameTime.h"
 #include "Map.h"
 #include "ObjectAccessor.h"
@@ -31,6 +32,9 @@ constexpr uint32 NPC_AIR_RIFT = 90015;
 constexpr uint32 NPC_FIRE_RIFT = 90016;
 constexpr uint32 NPC_SHADOW_RIFT = 90017;
 constexpr uint32 NPC_RIFT_SPAWN_LOCATION = 90018;
+
+constexpr uint32 GO_AIR_RIFT_VISUAL = 192819;
+constexpr uint32 GO_WATER_RIFT_VISUAL = 195706;
 
 constexpr uint32 RIFT_START_DELAY_MS = 2 * MINUTE * IN_MILLISECONDS;
 constexpr uint32 RIFT_RESPAWN_DELAY_MS = 30 * MINUTE * IN_MILLISECONDS;
@@ -310,6 +314,38 @@ public:
     struct FLRiftsCreatureRiftAI : public ScriptedAI
     {
         FLRiftsCreatureRiftAI(Creature* creature) : ScriptedAI(creature) { }
+
+        void Reset() override
+        {
+            me->RemoveAllGameObjects();
+
+            uint32 visualEntry;
+            switch (me->GetEntry())
+            {
+                case NPC_AIR_RIFT:
+                    visualEntry = GO_AIR_RIFT_VISUAL;
+                    break;
+                case NPC_WATER_RIFT:
+                    visualEntry = GO_WATER_RIFT_VISUAL;
+                    break;
+                default:
+                    return;
+            }
+
+            GameObject* visual = me->SummonGameObject(
+                visualEntry, me->GetPositionX(), me->GetPositionY(),
+                me->GetPositionZ(), me->GetOrientation(), 0.0f, 0.0f, 0.0f,
+                0.0f, 0);
+            if (!visual)
+            {
+                LOG_ERROR("module.fl-rifts",
+                    "Failed to summon Rift visual gameobject {} for Rift {}.",
+                    visualEntry, me->GetEntry());
+                return;
+            }
+
+            visual->SetGameObjectFlag(GO_FLAG_NOT_SELECTABLE);
+        }
 
         void SummonedCreatureDespawn(Creature* /*summon*/) override
         {

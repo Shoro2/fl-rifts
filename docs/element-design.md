@@ -173,6 +173,15 @@ All four Rift creatures carry `UNIT_FLAG_NOT_SELECTABLE`. Fire Rift `90016`
 uses exact model scale `3.0`; Fire boss 2 `80042` uses `1.2` (twice its migrated
 `0.6`), and Air boss 1 `80048` uses `1.05` (1.5 times its migrated `0.7`).
 
+Air and Water use GameObject visuals rather than creature displays. Air Rift
+`90015` summons stock GameObject `192819` (display `8244`, Defender's Portal),
+and Water Rift `90014` summons stock GameObject `195706` (display `9090`, Horde
+Gunship Portal Effects). Their creature models are set to the standard
+invisible display `11686`; the creatures remain the event controllers. The
+summoned visuals are non-selectable and owned by their controllers, so a reset
+replaces the visual and controller cleanup removes it. Fire and Shadow visuals
+remain unchanged.
+
 `80038` (formerly "[PH] Water Rift boss 2") carried a stray `boss_eloxin`
 ScriptName; the real Eloxin boss is `80067`, so `80038` is overridden to
 `boss_fl_water` safely. `80037`, the configured second Shadow boss, is renamed
@@ -188,11 +197,12 @@ name.
 | Fire / Air / Water boss AIs + helper NPCs | `src/FLRifts_boss_{fire,air,water}.cpp`, loader | ✅ code |
 | Boss ScriptName bindings | `data/sql/db-world/base/fl_rifts_elements.sql` | ✅ runnable |
 | New creatures (80175-80178) + models | same SQL | ✅ runnable |
+| Air/Water GameObject Rift visuals | `src/FLRifts.cpp` + same SQL | ✅ T0 code / T1 SQL |
 | Trash + Support abilities via SmartAI | same SQL | ✅ runnable¹ |
 | Shadow-equivalent health/damage tuning | same SQL | ✅ T1 isolated-DB verified |
 | Entry map reconciled with live FL DB | SQL + conf + `FLRifts.cpp` defaults | ✅ code |
 | Previous element build (before this polish) | operator box | ✅ T1 clean |
-| Current balance/combat build | operator box | ⬜ pending (T0 code only) |
+| Current balance/visual build | operator box | ⬜ pending (T0 code only) |
 | DB apply + boot Errors.log check | live `acore_world` | ⬜ pending |
 | In-game verification per element | live FL server | ⬜ pending (operator eyes) |
 

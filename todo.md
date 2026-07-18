@@ -34,6 +34,10 @@
   the prior frequency).
 - (medium) Confirm all four Rifts are non-selectable; Fire Rift is 3x its old
   scale, Fire boss 2 is 2x, and Air boss 1 is 1.5x.
+- (medium) Confirm Air Rift renders GameObject 192819 and Water Rift renders
+  GameObject 195706 at the controller position, with no visible underlying
+  creature, no interaction cursor, no duplicate after reset, and no orphaned
+  portal after Rift closure. Fire and Shadow must remain visually unchanged.
 - (medium) Confirm no `[PH]` Rift mob/boss names remain, Fire boss 1 no longer
   uses Flame Breath, 80017 buffs other mobs, and trash follows the one-melee /
   two-caster ability cap.

@@ -105,6 +105,16 @@ UPDATE `creature_template`
 SET `unit_flags`=`unit_flags` | 0x02000000
 WHERE `entry` IN (90014,90015,90016,90017);
 
+-- Air and Water use stock GameObject portal visuals, which are summoned and
+-- lifecycle-owned by their Rift creatures in FLRifts.cpp. Creature and
+-- GameObject display IDs are separate namespaces, so hide only these two
+-- controller creatures with the standard invisible display instead of putting
+-- GO display IDs 8244/9090 into creature_template_model. Fire and Shadow keep
+-- their existing creature visuals.
+UPDATE `creature_template_model`
+SET `CreatureDisplayID`=11686, `DisplayScale`=1
+WHERE `CreatureID` IN (90014,90015);
+
 -- Class drives the level-based power pool. The migrated placeholders were all
 -- warriors (class 1), leaving caster mana bars empty. Keep frontline mobs as
 -- warriors, use mage (8) for offensive casters and paladin (2) for supports.

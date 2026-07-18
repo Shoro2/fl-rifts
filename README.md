@@ -17,6 +17,8 @@ cleared.
   active it shows the current trash/boss wave and remaining enemies.
 - Native area-trigger announcements at 2:00, 1:00, 0:30, 0:10, and the final
   five seconds remain as a fallback.
+- Air and Water Rifts render as their configured portal GameObjects while an
+  invisible creature controller continues to own the event and its lifecycle.
 
 ## Runtime dependencies
 
@@ -43,9 +45,10 @@ the migrated content uses different IDs.
 
 The prior element/UI revision was built and deployed on the Windows operator
 box, and the compact top status bar is operator-confirmed in game. The current
-element-combat C++ remains T0 until it is built. The Shadow-equivalent creature
-tuning is T1 database-verified in isolated live-data and stock-style schemas,
-but `data/sql/db-world/base/fl_rifts_elements.sql` has not been applied to the
-live DB. Rift lifecycle checks plus the tuned names, stats, scales, mana roles,
-hazards and boss mechanics still require an in-game pass. See `todo.md` for the
-exact outstanding evidence.
+element-combat and Rift-visual C++ remain T0 until they are built. The
+Shadow-equivalent creature tuning is T1 database-verified in isolated live-data
+and stock-style schemas, but `data/sql/db-world/base/fl_rifts_elements.sql` has
+not been applied to the live DB. Rift lifecycle checks plus the Air/Water
+GameObject appearance, tuned names, stats, scales, mana roles, hazards and boss
+mechanics still require an in-game pass. See `todo.md` for the exact outstanding
+evidence.

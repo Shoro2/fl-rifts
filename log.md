@@ -1,5 +1,15 @@
 # Change log
 
+- `fix(Rifts): Use portal GameObjects for Air and Water` -
+  Air Rift now renders stock GameObject 192819 (Defender's Portal) and Water
+  Rift renders stock GameObject 195706 (Horde Gunship Portal Effects). Their
+  existing creature bodies use invisible display 11686 while retaining all
+  event logic. Each portal is non-selectable and owned by its Rift controller;
+  resets replace it and AzerothCore's owned-GameObject cleanup removes it with
+  the controller. Fire and Shadow visuals are unchanged. The changed C++ file's
+  targeted codestyle/lifecycle checks and the isolated idempotent SQL check
+  pass; build/live DB apply/in-game visual QA remain owed.
+
 - `fix(Rifts): Balance elements against Shadow` -
   Read the live `acore_world.creature_template` values for all Shadow and
   elemental Rift creatures. Fire, Water and Air trash now copy the four Shadow
