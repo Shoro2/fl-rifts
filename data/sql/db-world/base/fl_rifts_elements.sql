@@ -6,8 +6,9 @@
 --
 -- Entry map (reconciled 2026-07-14 against the live FL DB): the element trash
 -- and bosses reuse the FL "[PH] <element> Rift monster/boss" placeholder
--- creatures, which already carry combat-ready stats (faction 16, level 80/82,
--- rank, health/damage mods) and display models. Only FOUR genuinely-new
+-- creatures, which already carry their faction, level, rank and display
+-- models. Their weak placeholder health/damage values are explicitly replaced
+-- with the accepted Shadow Rift tuning below. Only FOUR genuinely-new
 -- creatures are authored: the Water support (80175), the Rising Tide globule
 -- (80176), the wandering tornado (80177), and the Flame Strike trap (80178).
 --
@@ -26,8 +27,8 @@
 --   * Reserved/placeholder entries get an INSERT IGNORE minimal stub — created
 --     on a stock DB (so the worldserver boots with a clean Errors.log), ignored
 --     on the FL DB (its real, richer rows win).
---   * The three new creatures get explicit definitions (identical on both DBs).
---   * ScriptName / AIName / smart_scripts then apply on top for everyone.
+--   * The four new creatures get explicit definitions (identical on both DBs).
+--   * Combat tuning, ScriptName / AIName and smart_scripts then apply on top.
 -- All ability spell IDs are stock 3.3.5a NPC abilities (no DBC patch).
 -- ============================================================================
 
@@ -131,7 +132,7 @@ WHERE `CreatureID`=80048;
 --    in game); the globule is deliberately small and fragile.
 -- ---------------------------------------------------------------------------
 INSERT INTO `creature_template` (`entry`,`name`,`subname`,`faction`,`unit_class`,`minlevel`,`maxlevel`,`HealthModifier`,`DamageModifier`,`unit_flags`) VALUES
-  (80175,'Coral Tidepriest','Water Rift',16,2,80,80,1.5,2,0),
+  (80175,'Coral Tidepriest','Water Rift',16,2,80,80,17,15,0),
   (80176,'Rising Tide Globule',NULL,16,1,80,80,0.3,1,0),
   (80177,'Raging Tornado',NULL,16,1,80,80,1,1,0x02000002),
   (80178,'Flame Strike Trap',NULL,16,1,82,82,1,1,0x02000002)
@@ -145,6 +146,34 @@ ON DUPLICATE KEY UPDATE
   `HealthModifier`=VALUES(`HealthModifier`),
   `DamageModifier`=VALUES(`DamageModifier`),
   `unit_flags`=VALUES(`unit_flags`);
+
+-- Mirror the accepted Shadow Rift creature tuning by archetype slot:
+--   slot 1 / 80027 = 17 health, 18 damage (melee bruiser)
+--   slot 2 / 80028 = 17 health, 15 damage (caster)
+--   slot 3 / 80029 = 25 health, 15 damage (disruptor)
+--   slot 4 / 80035 = 17 health, 15 damage (support)
+-- The original Shadow boss 80036 is the boss benchmark at 47 health / 19
+-- damage. Shadow boss 80037 is a retrofitted FL placeholder, not a balance
+-- reference. Helpers (globule, tornado and Flame Strike trap) stay unchanged.
+UPDATE `creature_template`
+SET
+  `HealthModifier`=CASE
+    WHEN `entry` IN (80033,80045,80047) THEN 25
+    ELSE 17
+  END,
+  `DamageModifier`=CASE
+    WHEN `entry` IN (80031,80039,80043) THEN 18
+    ELSE 15
+  END
+WHERE `entry` IN
+  (80017,80031,80032,80033,80039,80041,80043,80044,80045,80046,80047,
+   80175);
+
+UPDATE `creature_template`
+SET
+  `HealthModifier`=47,
+  `DamageModifier`=19
+WHERE `entry` IN (80034,80038,80040,80042,80048,80049);
 
 DELETE FROM `creature_template_model` WHERE `CreatureID` IN (80175,80176,80177,80178);
 INSERT INTO `creature_template_model` (`CreatureID`,`Idx`,`CreatureDisplayID`,`DisplayScale`,`Probability`) VALUES

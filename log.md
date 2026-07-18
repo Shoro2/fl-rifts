@@ -1,5 +1,19 @@
 # Change log
 
+- `fix(Rifts): Balance elements against Shadow` -
+  Read the live `acore_world.creature_template` values for all Shadow and
+  elemental Rift creatures. Fire, Water and Air trash now copy the four Shadow
+  archetype slots at health/damage modifiers 17/18, 17/15, 25/15 and 17/15;
+  all six elemental bosses copy original Shadow boss 80036 at 47/19. The
+  retrofitted Shadow placeholder 80037 is not used as a benchmark, and the
+  globule, tornado and Flame Strike trap remain intentionally lightweight.
+  The complete module SQL applied successfully to both a live-data clone and
+  an empty stock-style schema; all expected values matched and both temporary
+  schemas were removed. `git diff --check` passes. The official AzerothCore SQL
+  checker passes every content/safety check and reports only the intentional,
+  pre-existing module `base/` directory policy warning. T1 database-verified
+  on the Windows operator box; live DB apply and in-game combat are still owed.
+
 - `fix(Rifts): Polish element combat` -
   Replaced all configured Fire/Water/Air placeholder names plus Shadow boss 2,
   made every Rift non-selectable, and set exact scales for Fire Rift (3.0),

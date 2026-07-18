@@ -20,8 +20,8 @@
   80050, Nil'un 80030, Arcane Magical Anomaly 80051) are untouched.
 - (done, prior revision T1) Build worldserver (MSVC RelWithDebInfo,
   `dcore_bin`) — clean before the current combat-polish changes.
-- (high) Build the current `claude/rift-combat-polish-019f6699` branch and run
-  the module/Core codestyle checks.
+- (high) Build the current `claude/balance-rift-creatures-019f74ad` branch and
+  run the module/Core codestyle checks.
 - (high) Apply `data/sql/db-world/base/fl_rifts_elements.sql` to the live
   `acore_world`, boot worldserver, and confirm `Errors.log` stays at the 7-line
   baseline (no "not assigned" / creature_template errors).
@@ -37,6 +37,9 @@
 - (medium) Confirm no `[PH]` Rift mob/boss names remain, Fire boss 1 no longer
   uses Flame Breath, 80017 buffs other mobs, and trash follows the one-melee /
   two-caster ability cap.
+- (medium) Confirm Fire/Water/Air trash now survives and hits at the accepted
+  Shadow-Rift level: slots 1-4 use health/damage modifiers 17/18, 17/15,
+  25/15 and 17/15; all six elemental bosses use 47/19.
 - (medium) QA the remaining placeholder displays on 80175/80176/80177 and the
   Protective Bubble `54306` flat-reduction behavior.
 - (low) Optional: recolor the AIO status bar per element (add an element field to

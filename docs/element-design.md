@@ -31,6 +31,26 @@ Each element has **two bosses** that share the Shadow boss's rotation shape
 (gap-closer/burst · AoE · single-target · filler) plus **one signature mechanic**
 that defines the element.
 
+### Combat tuning
+
+The live `acore_world.creature_template` values of the established Shadow
+creatures are the balance baseline. Fire, Water and Air copy them by their
+shared archetype slot rather than retaining the weak FL placeholder values:
+
+| Slot | Shadow reference | HealthModifier | DamageModifier |
+|---|---:|---:|---:|
+| 1 · Melee Bruiser | 80027 | 17 | 18 |
+| 2 · Caster | 80028 | 17 | 15 |
+| 3 · Disruptor | 80029 | 25 | 15 |
+| 4 · Support | 80035 | 17 | 15 |
+| Boss | 80036 | 47 | 19 |
+
+Both boss variants of each new element use the original Shadow boss 80036 as
+their benchmark. Entry 80037 is not a tuning reference: it was an unrelated FL
+placeholder retrofitted as a second Shadow boss. Summoned mechanic helpers
+(globule, tornado and Flame Strike trap) intentionally keep their lightweight
+stats.
+
 Shadow reference kit (`src/FLRifts_bosses.cpp`): Charge `74399` + Knockback
 `26478`, Silence `64189`, Strike `62130`, Cleave `70670`. (`26478` is C'thun's
 Massive Ground Rupture visual reused school-neutral, not a true knockback.)
@@ -169,9 +189,10 @@ name.
 | Boss ScriptName bindings | `data/sql/db-world/base/fl_rifts_elements.sql` | ✅ runnable |
 | New creatures (80175-80178) + models | same SQL | ✅ runnable |
 | Trash + Support abilities via SmartAI | same SQL | ✅ runnable¹ |
+| Shadow-equivalent health/damage tuning | same SQL | ✅ T1 isolated-DB verified |
 | Entry map reconciled with live FL DB | SQL + conf + `FLRifts.cpp` defaults | ✅ code |
 | Previous element build (before this polish) | operator box | ✅ T1 clean |
-| Current combat-polish build | operator box | ⬜ pending (T0 code only) |
+| Current balance/combat build | operator box | ⬜ pending (T0 code only) |
 | DB apply + boot Errors.log check | live `acore_world` | ⬜ pending |
 | In-game verification per element | live FL server | ⬜ pending (operator eyes) |
 

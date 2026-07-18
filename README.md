@@ -43,7 +43,9 @@ the migrated content uses different IDs.
 
 The prior element/UI revision was built and deployed on the Windows operator
 box, and the compact top status bar is operator-confirmed in game. The current
-combat-polish branch is T0 code-only until its updated C++ and
-`data/sql/db-world/base/fl_rifts_elements.sql` are built/applied. Rift lifecycle
-checks plus the tuned names, scales, mana roles, hazards and boss mechanics
-still require an in-game pass. See `todo.md` for the exact outstanding evidence.
+element-combat C++ remains T0 until it is built. The Shadow-equivalent creature
+tuning is T1 database-verified in isolated live-data and stock-style schemas,
+but `data/sql/db-world/base/fl_rifts_elements.sql` has not been applied to the
+live DB. Rift lifecycle checks plus the tuned names, stats, scales, mana roles,
+hazards and boss mechanics still require an in-game pass. See `todo.md` for the
+exact outstanding evidence.
