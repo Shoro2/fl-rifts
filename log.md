@@ -1,5 +1,25 @@
 # Change log
 
+- `fix(Rifts): Pay element Rifts the Shadow loot` -
+  Root cause of "Rift: no reward" (host, 2026-10-03; the testers cleared a
+  Water and an Air Rift). The module hands out nothing itself; the reward is
+  creature loot, and only the Shadow Rift has any: trash 80027-80029/80035
+  `lootid` 90001 (Bloody Trophy x1-5) and boss 80036 `lootid` 90002 (100
+  Bloody Trophies, The Blood Trails Badge, one item). Every Fire/Water/Air
+  trash and boss and Shadow boss 2 (80037) carry `lootid` 0 (80017 a stock
+  junk table) on the host and the workbench. New
+  `data/sql/db-world/updates/fl_rifts_rewards.sql` gives them the Shadow
+  tables (parity default - the operator may want element-specific loot),
+  guarded by EXISTS so a stock DB stays clean. Trash loot was out of reach by
+  hand as well: a `TEMPSUMMON_CORPSE_DESPAWN` corpse is gone with the
+  creature's next update, so only mod-auto-loot's scan for an ungrouped player
+  within 10 yd picked it up (it did for an ungrouped test bot, run 281); a
+  grouped player never saw a lootable corpse. Trash now keeps its corpse for
+  one minute (`RIFT_CREEP_CORPSE_MS`), which the kill-time wave count makes
+  harmless. T1: the SQL applied to scratch copies of the workbench tables
+  (idempotent; no-op without the loot tables) and passes `codestyle-sql.py`;
+  the C++ passed an MSVC `/Zs` front-end check only (not built).
+
 - `fix(Rifts): End the boss wave on the boss kill` -
   Root cause of "Rift hangs after killing boss" (host, 2026-10-03). Wave
   creatures only counted as gone in `SummonedCreatureDespawn`. Trash is a

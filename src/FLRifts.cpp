@@ -41,6 +41,9 @@ constexpr uint32 RIFT_RESPAWN_DELAY_MS = 30 * MINUTE * IN_MILLISECONDS;
 constexpr uint32 RIFT_RETRY_DELAY_MS = 5 * IN_MILLISECONDS;
 constexpr uint32 RIFT_WAVE_DELAY_MS = 10 * IN_MILLISECONDS;
 constexpr uint32 RIFT_WAVE_SIZE = 10;
+// How long a killed wave creature stays lootable. A wave counts a kill at
+// death, so the corpse no longer holds up the next wave.
+constexpr uint32 RIFT_CREEP_CORPSE_MS = MINUTE * IN_MILLISECONDS;
 
 constexpr uint32 RIFT_POI_FLAGS = 99;
 constexpr uint32 RIFT_POI_ICON = 7;
@@ -435,10 +438,12 @@ public:
                     return false;
             }
 
+            // A TEMPSUMMON_CORPSE_DESPAWN corpse is gone with the creature's
+            // next update, too soon to loot by hand; keep it lootable.
             Creature* summon = me->SummonCreature(
                 RAND(npcSpawn1, npcSpawn2, npcSpawn3, npcSpawn4),
                 summonX, summonY, summonZ, me->GetOrientation(),
-                TEMPSUMMON_CORPSE_DESPAWN);
+                TEMPSUMMON_CORPSE_TIMED_DESPAWN, RIFT_CREEP_CORPSE_MS);
             if (!summon)
                 return false;
 
