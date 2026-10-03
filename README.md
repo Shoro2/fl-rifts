@@ -19,6 +19,12 @@ cleared.
   five seconds remain as a fallback.
 - Air and Water Rifts render as their configured portal GameObjects while an
   invisible creature controller continues to own the event and its lifecycle.
+- A wave creature counts as defeated the moment it dies: the Rift closes as the
+  boss dies, and the corpses stay lootable (trash for one minute, the boss for
+  its corpse decay). Every element pays the Shadow Rift loot (trash 90001,
+  bosses 90002 - `data/sql/db-world/updates/fl_rifts_rewards.sql`).
+- The spawner is an active object, so the event runs - and the next Rift opens
+  30 minutes after a close - whether or not anyone is near the spawner.
 
 ## Runtime dependencies
 

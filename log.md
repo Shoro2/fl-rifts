@@ -1,5 +1,12 @@
 # Change log
 
+- `test(Rifts): Add a lifecycle bot scenario` - `tests/rift_lifecycle.tbs`
+  (mod-fl-testbots) drives one Rift to its end with Xi'ri's Wrath (36944),
+  checks that it closes as the boss dies and that the next Rift opens while
+  the director waits 31 minutes ~600 yd away; README and `todo.md` describe the
+  new lifecycle and the owed build, run and reward decision. Not run yet (needs
+  the fixed build and the folder in `TestBots.ScenarioDirs`).
+
 - `fix(Rifts): Pay element Rifts the Shadow loot` -
   Root cause of "Rift: no reward" (host, 2026-10-03; the testers cleared a
   Water and an Air Rift). The module hands out nothing itself; the reward is

@@ -1,0 +1,43 @@
+# fl-rifts lifecycle on a FIXED build (mod-fl-testbots; this folder must be listed in
+# TestBots.ScenarioDirs). Start it right after a worldserver restart: the first player near the
+# spawner 90018 (guid 5300694, map 727) opens a Rift of a random element at once.
+# The director kills each wave with Xi'ri's Wrath (36944: instakill, every attackable enemy within
+# 50 yd; the Rift itself is not selectable and survives), checks that the Rift closes as the boss
+# dies, then waits 31 minutes at the hub (~600 yd away, out of the spawner's update range) and
+# comes back. The next Rift must have opened meanwhile: Server.log shows "Closing completed Rift."
+# before the stage 5 line and a new "Spawned rift" line between the stage 6 and stage 7 lines.
+# On the unfixed build (07c7afa) the stage 5 checks fail (the Rift waits for the boss corpse) and
+# no Rift opens before the director is back.
+name    fl-rifts lifecycle - close on the boss kill, next Rift with nobody near
+timeout 2400s
+group none
+
+place 727 12817.3 11967.0 -34.0
+require gm alive
+as gm .cheat god on
+expect output has "Godmode is ON"
+log stage 1 - at the spawner; the countdown of the new Rift runs
+wait 125s
+log stage 2 - wave 1
+do gm cast 36944 triggered
+wait 15s
+log stage 3 - wave 2
+do gm cast 36944 triggered
+wait 15s
+log stage 4 - boss
+do gm cast 36944 triggered
+wait 3s
+log stage 5 - the boss died 3 s ago, the Rift must be closed
+expect creature:90014 missing
+expect creature:90015 missing
+expect creature:90016 missing
+expect creature:90017 missing
+place 727 13421.8 11926.1 -32.9
+log stage 6 - at the hub for 31 minutes, the next Rift opens meanwhile
+wait 1860s
+place 727 12817.3 11967.0 -34.0
+wait 5s
+log stage 7 - back at the spawner, a new Rift stands (see the Spawned rift line above)
+
+cleanup
+as gm .cheat god off

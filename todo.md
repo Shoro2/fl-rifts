@@ -1,5 +1,23 @@
 # Open work
 
+- (high) Build and restart with the lifecycle/reward fixes (2026-10-03), then
+  run `tests/rift_lifecycle.tbs` right after the restart (list
+  `modules/fl-rifts/tests` in `TestBots.ScenarioDirs`): the Rift must close as
+  the boss dies and the next Rift must open while the director waits 31
+  minutes at the hub. Host rollout = rebuild + restart (the updater applies
+  `data/sql/db-world/updates/fl_rifts_rewards.sql`) via a MIG entry.
+- (high) Operator decision: element Rifts now pay the Shadow loot (trash
+  90001, bosses 90002); confirm or name element-specific loot tables.
+- (medium) Shadow boss 2 (80037, "Vorath, the Hollow King") is an untuned
+  placeholder (rank 0, health/damage modifiers 1.5/2 against 47/19 for
+  80036) and wins half of all Shadow Rifts; tune it or point
+  `FLRifts.shadowboss2` at a real boss.
+- (medium) Element trash (80031-80033, 80039, 80041, 80043-80047) has
+  `detection_range` 1, so it never aggroes on its own (Shadow trash: 15).
+- (low) A Rift that leaves the world without `UnSummon` (e.g. `.npc delete`)
+  never reaches the spawner's `SummonedCreatureDespawn`, leaving the event
+  Active without a Rift until a restart; the spawner could re-check
+  `riftState.RiftGuid` in `UpdateAI`.
 - (high) Verify in game that the native POI appears for players already in the
   zone, appears for late entrants, and disappears on leave/clear.
 - (high) Run `/aio reset`, then verify the compact two-minute countdown, its
