@@ -601,6 +601,13 @@ public:
     {
         FLRiftsCreatureSpawnerAI(Creature* creature) : ScriptedAI(creature)
         {
+            // The spawner opens and closes every Rift and its m_Events
+            // carries the respawn delay. An inactive creature is only updated
+            // while a player is within visibility range of it
+            // (Creature::IsUpdateNeeded), so the event used to stall - no
+            // close after the boss, no next Rift - whenever nobody stood at
+            // the spawner.
+            me->setActive(true);
         }
 
         void SummonedCreatureDespawn(Creature* summon) override

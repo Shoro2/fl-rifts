@@ -1,5 +1,20 @@
 # Change log
 
+- `fix(Rifts): Keep the Rift spawner always updated` -
+  Root cause of "Rifts don't respawn" (host, 2026-10-03). The spawner 90018
+  runs `SpawnRift`, closes a finished Rift and carries the 30-minute respawn
+  event on its own `m_Events`, but as an inactive DB creature it is only
+  updated while a player is near it (`Creature::IsUpdateNeeded`: a marked
+  cell, a visible player, combat ...; `EventProcessor` time advances only by
+  the creature's own updates). The only spawner (guid 5300694, map 727) is
+  about 580 yd from where players gather, so a finished Rift stayed open until
+  someone came by and the respawn delay only ran while someone stood there.
+  Host evidence: the 02:22 boot logged "Closing completed Rift." only right
+  after a character login and opened no further Rift in the next six hours
+  while players stayed at the hub; 310 workbench boots never opened more than
+  one Rift. The spawner now calls `setActive(true)`. T0: not built yet - needs
+  a rebuild and restart.
+
 - `fix(Rifts): Use portal GameObjects for Air and Water` -
   Air Rift now renders stock GameObject 192819 (Defender's Portal) and Water
   Rift renders stock GameObject 195706 (Horde Gunship Portal Effects). Their
