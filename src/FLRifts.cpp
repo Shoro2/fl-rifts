@@ -72,7 +72,10 @@ struct RiftEventState
 
 RiftEventState riftState;
 std::recursive_mutex riftStateMutex;
-uint32 creepsAlive = 0;
+// The wave creatures and the boss of the current Rift that are still
+// undefeated. A summon leaves the set when it dies or when it vanishes alive,
+// whichever comes first, so a corpse that lingers never blocks the event.
+GuidUnorderedSet riftCreeps;
 uint8 waveNumber = 0;
 bool waitingForNextWave = false;
 bool waveRetryPending = false;
@@ -124,7 +127,7 @@ void SendRiftUiState(Player* player)
             break;
         case RiftPhase::Active:
             SendRiftAddonMessage(player, Acore::StringFormat(
-                "WAVE|{}|{}|{}", GetDisplayedWave(), creepsAlive,
+                "WAVE|{}|{}|{}", GetDisplayedWave(), riftCreeps.size(),
                 waveNumber >= 4 ? 1 : 0));
             break;
         case RiftPhase::Inactive:
@@ -212,7 +215,7 @@ void UpdateWaveWorldState(Creature* creature)
 void BeginRiftCountdown(Creature* controller, Creature* rift)
 {
     std::lock_guard<std::recursive_mutex> lock(riftStateMutex);
-    creepsAlive = 0;
+    riftCreeps.clear();
     waveNumber = 0;
     waitingForNextWave = false;
     waveRetryPending = false;
@@ -263,7 +266,7 @@ void ClearRiftEvent(Creature* controller)
     riftState.MarkedPlayers.clear();
 
     riftState = RiftEventState{};
-    creepsAlive = 0;
+    riftCreeps.clear();
     waveNumber = 0;
     waitingForNextWave = false;
     waveRetryPending = false;
@@ -347,15 +350,28 @@ public:
             visual->SetGameObjectFlag(GO_FLAG_NOT_SELECTABLE);
         }
 
-        void SummonedCreatureDespawn(Creature* /*summon*/) override
+        // A kill ends a summon's part in the wave at once. The boss is a
+        // TEMPSUMMON_MANUAL_DESPAWN summon whose corpse only despawns after
+        // its corpse decay (150 s for an elite without loot, up to 600 s for
+        // a world boss), so counting despawns alone held the finished Rift
+        // open on "Boss wave - 1 enemy" for that long.
+        void SummonedCreatureDies(Creature* summon, Unit* /*killer*/) override
+        {
+            ReleaseRiftCreep(summon);
+        }
+
+        // Also covers a summon that vanishes alive; the despawn of a corpse
+        // that already counted as a kill is ignored.
+        void SummonedCreatureDespawn(Creature* summon) override
+        {
+            ReleaseRiftCreep(summon);
+        }
+
+        void ReleaseRiftCreep(Creature* summon)
         {
             std::lock_guard<std::recursive_mutex> lock(riftStateMutex);
-            if (creepsAlive > 0)
-                --creepsAlive;
-            else
-                LOG_WARN("module.fl-rifts",
-                    "Received a summon despawn with no tracked rift "
-                    "creatures.");
+            if (!riftCreeps.erase(summon->GetGUID()))
+                return;
 
             UpdateWaveWorldState(me);
         }
@@ -432,7 +448,7 @@ public:
                 false);
             summon->UpdateGroundPositionZ(
                 summon->GetPositionX(), summon->GetPositionY(), floorZ);
-            ++creepsAlive;
+            riftCreeps.insert(summon->GetGUID());
             return true;
         }
 
@@ -509,7 +525,7 @@ public:
             if (!boss)
                 return false;
 
-            ++creepsAlive;
+            riftCreeps.insert(boss->GetGUID());
             return true;
         }
 
@@ -531,7 +547,7 @@ public:
             {
                 case 0:
                 case 2:
-                    if (creepsAlive == 0)
+                    if (riftCreeps.empty())
                     {
                         if (!SummonRiftWave())
                         {
@@ -545,7 +561,7 @@ public:
                     break;
                 case 1:
                 case 3:
-                    if (creepsAlive == 0 && !waitingForNextWave)
+                    if (riftCreeps.empty() && !waitingForNextWave)
                     {
                         me->m_Events.AddEventAtOffset(
                             new DelayedWaveSpawn(),
@@ -554,7 +570,7 @@ public:
                     }
                     break;
                 case 4:
-                    if (creepsAlive == 0)
+                    if (riftCreeps.empty())
                     {
                         if (!SummonRiftBoss())
                         {
@@ -571,7 +587,7 @@ public:
                     }
                     break;
                 case 5:
-                    if (creepsAlive == 0)
+                    if (riftCreeps.empty())
                     {
                         ChatHandler(nullptr).SendWorldText(
                             LANG_EVENTMESSAGE,
@@ -703,7 +719,7 @@ public:
 
             if (riftState.Phase == RiftPhase::Inactive)
             {
-                if (riftSpawnUnlocked && waveNumber == 0 && creepsAlive == 0)
+                if (riftSpawnUnlocked && waveNumber == 0 && riftCreeps.empty())
                     SpawnRift();
                 return;
             }
@@ -712,7 +728,7 @@ public:
                 return;
 
             if (riftState.Phase == RiftPhase::Active &&
-                waveNumber == 6 && creepsAlive == 0)
+                waveNumber == 6 && riftCreeps.empty())
             {
                 if (debugFLRifts)
                     LOG_DEBUG("module.fl-rifts", "Closing completed Rift.");

@@ -1,5 +1,19 @@
 # Change log
 
+- `fix(Rifts): End the boss wave on the boss kill` -
+  Root cause of "Rift hangs after killing boss" (host, 2026-10-03). Wave
+  creatures only counted as gone in `SummonedCreatureDespawn`. Trash is a
+  `TEMPSUMMON_CORPSE_DESPAWN` summon and vanishes on death, but the boss is a
+  `TEMPSUMMON_MANUAL_DESPAWN` (= `DEAD_DESPAWN`) summon whose corpse only
+  unsummons after its corpse decay: 300 s for the elite element bosses, halved
+  to 150 s because they have no loot, 600 s for the world boss 80036 outside an
+  instance. All that time the Rift sat on "Boss wave - 1 enemy" with no
+  message, and players who walked off left it open for good (previous entry).
+  The undefeated summons are now a GUID set: a summon leaves it on
+  `SummonedCreatureDies` or when it despawns alive, and the later despawn of a
+  counted corpse is ignored, so the Rift closes as the boss dies and its
+  corpse stays lootable. T0: not built yet.
+
 - `fix(Rifts): Keep the Rift spawner always updated` -
   Root cause of "Rifts don't respawn" (host, 2026-10-03). The spawner 90018
   runs `SpawnRift`, closes a finished Rift and carries the 30-minute respawn
