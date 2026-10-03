@@ -1,5 +1,19 @@
 # Change log
 
+- `docs(Rifts): Record the lifecycle bot pass` - T1 bot-verified on the
+  workbench (worldserver b4fde7ad = fl-rifts b71422b, `fl_rifts_rewards.sql`
+  applied): run 315 of `tests/rift_lifecycle.tbs` PASSED 16/0 in 2240 s on an
+  Air Rift - both waves verified standing and cleared, the Rift gone and
+  "Closing completed Rift." logged in the tick of the boss kill, the boss
+  corpse still there 3 s later, 100 Bloody Trophies and the Badge looted from
+  it, and with the director 605 yd away for 2000 s the next Rift (Fire)
+  opened 30 minutes after the close and its first wave stood on return. The
+  rewards SQL now says that Fire support 80017 drops its inherited stock
+  table 30847 (Raging Flame's world loot) for 90001 on purpose: 80017 has no
+  world spawn on the workbench or the host, so only Fire Rift kills change.
+  The comment changes the file's hash, so the updater re-applies it once on
+  a box that already has it - harmless, it is idempotent.
+
 - `test(Rifts): Make the lifecycle scenario deterministic` - The first
   version cast blindly three times; run 312 (2026-10-03, fixed build
   b4fde7ad) left a wave straggler or an unkilled boss behind and could not
