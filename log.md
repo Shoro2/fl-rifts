@@ -1,5 +1,24 @@
 # Change log
 
+- `test(Rifts): Make the lifecycle scenario deterministic` - The first
+  version cast blindly three times; run 312 (2026-10-03, fixed build
+  b4fde7ad) left a wave straggler or an unkilled boss behind and could not
+  tell. The scenario is element-agnostic now: every Rift is named
+  "Dimensional Rift" and the checks count creatures (`.mmap testarea`: the
+  alive ones within 40 yd; `.npc near`: all, corpses included), each wave is
+  verified standing (12) and cleared (2) before the next step, Xi'ri's Wrath
+  is cast from the ground and from above (line of sight), the boss is killed
+  from 15 yd above its spawn height and its corpse looted through a 12-yd
+  sweep. Run 314 on the fixed build: waves 1 and 2 cleared; "Closing
+  completed Rift." in the same tick as the boss kill; Rift gone and alive
+  count 1 three seconds later; 100 Bloody Trophies and the Badge looted from
+  the boss; with the director 605 yd away a new Rift opened 30 minutes after
+  the close and its first wave stood on return. Its one FAIL was the corpse
+  count: the boss died 10 yd from the ungrouped director, and mod-auto-loot
+  calls `AllLootRemovedFromCorpse` on every corpse within 10 yd every 250 ms,
+  each call halving the remaining corpse time, so the corpse was gone within
+  about 3 s - hence the kill from above.
+
 - `test(Rifts): Add a lifecycle bot scenario` - `tests/rift_lifecycle.tbs`
   (mod-fl-testbots) drives one Rift to its end with Xi'ri's Wrath (36944),
   checks that it closes as the boss dies and that the next Rift opens while

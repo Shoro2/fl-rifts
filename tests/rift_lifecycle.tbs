@@ -1,43 +1,172 @@
-# fl-rifts lifecycle on a FIXED build (mod-fl-testbots; this folder must be listed in
-# TestBots.ScenarioDirs). Start it right after a worldserver restart: the first player near the
-# spawner 90018 (guid 5300694, map 727) opens a Rift of a random element at once.
-# The director kills each wave with Xi'ri's Wrath (36944: instakill, every attackable enemy within
-# 50 yd; the Rift itself is not selectable and survives), checks that the Rift closes as the boss
-# dies, then waits 31 minutes at the hub (~600 yd away, out of the spawner's update range) and
-# comes back. The next Rift must have opened meanwhile: Server.log shows "Closing completed Rift."
-# before the stage 5 line and a new "Spawned rift" line between the stage 6 and stage 7 lines.
-# On the unfixed build (07c7afa) the stage 5 checks fail (the Rift waits for the boss corpse) and
-# no Rift opens before the director is back.
-name    fl-rifts lifecycle - close on the boss kill, next Rift with nobody near
-timeout 2400s
+# fl-rifts lifecycle (mod-fl-testbots): one Rift from its opening to the next one.
+# Run it on a fixed build (fl-rifts b71422b or later) with no Rift fight in progress: the
+# director's first visit to the spawner 90018 (guid 5300694, map 727) after a restart opens a Rift
+# of a random element; a Rift that already stands with its first wave (countdown over, nothing
+# killed) works the same. Element-agnostic: every Rift is named "Dimensional Rift", and the checks
+# count creatures instead of naming entries:
+#   `.mmap testarea` = ALIVE creatures within 40 yd of the director ("Found <n> Creatures.") -
+#     around the spawner that is the spawner itself, the Rift and its wave or boss (the nearest
+#     world spawn stands 90 yd away);
+#   `.npc near <yd>` = every creature, corpses included ("... (distance <yd>): <n>").
+# Wave creatures spawn within 20 yd of the Rift and the boss 10 yd above them; Xi'ri's Wrath
+# (36944: instakill on every attackable enemy within 50 yd and line of sight; the Rift and the
+# spawner are not attackable) is cast from the ground and from above, so no creature survives a
+# blocked line of sight. Wave corpses stay 60 s (RIFT_CREEP_CORPSE_MS) and are gone before the boss
+# dies, so the only corpse left then is the boss's. Its loot (90002: 100 Bloody Trophies 250075,
+# The Blood Trails Badge 701008, one item) reaches the director through mod-auto-loot (10 yd, an
+# ungrouped player), so the director sweeps a 12-yd grid at the boss's spawn height. The boss dies
+# while the director hovers 15 yd above that height: mod-auto-loot calls AllLootRemovedFromCorpse on
+# every corpse within 10 yd every 250 ms, and each call halves the corpse's remaining time - a corpse
+# next to an ungrouped looter is gone within about 3 s, before the corpse check could see it
+# (run 314, 2026-10-03).
+# Server.log: "Closing completed Rift." right after the stage 6 line, "Spawned rift ..." 30 minutes
+# later during stage 8, "Rift countdown completed ..." two minutes after that.
+name    fl-rifts lifecycle - close on the boss kill, boss loot, next Rift with nobody near
+timeout 2600s
 group none
 
 place 727 12817.3 11967.0 -34.0
 require gm alive
 as gm .cheat god on
 expect output has "Godmode is ON"
-log stage 1 - at the spawner; the countdown of the new Rift runs
+wait 3s
+as gm .npc near 15
+require output has "Dimensional Rift"
+log stage 1 - a Rift stands at the spawner; its first wave comes when the countdown ends
 wait 125s
-log stage 2 - wave 1
+as gm .mmap testarea
+require output value Found == 12
+as gm .npc near 45
+log stage 2 - wave 1 stands (10 creatures, the Rift, the spawner); clearing it
 do gm cast 36944 triggered
-wait 15s
-log stage 3 - wave 2
+do gm goto 12817.3 11967.0 -20.0
+wait 500ms
 do gm cast 36944 triggered
-wait 15s
-log stage 4 - boss
+do gm goto 12799.3 11949.0 -20.0
+wait 500ms
+do gm cast 36944 triggered
+do gm goto 12835.3 11985.0 -20.0
+wait 500ms
+do gm cast 36944 triggered
+do gm goto 12817.3 11967.0 -34.0
+wait 500ms
+do gm cast 36944 triggered
+wait 1s
+as gm .mmap testarea
+require output value Found == 2
+log stage 3 - wave 1 cleared; wave 2 comes 10 s later
+wait 12s
+as gm .mmap testarea
+require output value Found == 12
+as gm .npc near 45
+do gm cast 36944 triggered
+do gm goto 12817.3 11967.0 -20.0
+wait 500ms
+do gm cast 36944 triggered
+do gm goto 12799.3 11949.0 -20.0
+wait 500ms
+do gm cast 36944 triggered
+do gm goto 12835.3 11985.0 -20.0
+wait 500ms
+do gm cast 36944 triggered
+do gm goto 12817.3 11967.0 -34.0
+wait 500ms
+do gm cast 36944 triggered
+wait 1s
+as gm .mmap testarea
+require output value Found == 2
+log stage 4 - wave 2 cleared; the boss comes 10 s later, the wave corpses go after 60 s
+wait 70s
+as gm .mmap testarea
+require output value Found == 3
+as gm .npc near 45
+require output value ): == 3
+log stage 5 - the boss stands and is the only creature besides the Rift and the spawner; killing it from 15 yd above its spawn height
+do gm destroy 250075
+do gm destroy 701008
+do gm goto 12817.3 11967.0 -9.6
+wait 500ms
 do gm cast 36944 triggered
 wait 3s
-log stage 5 - the boss died 3 s ago, the Rift must be closed
-expect creature:90014 missing
-expect creature:90015 missing
-expect creature:90016 missing
-expect creature:90017 missing
+log stage 6 - 3 s after the boss kill the Rift must be gone and the boss corpse still there
+as gm .mmap testarea
+require output value Found == 1
+as gm .npc near 45
+expect output lacks "Dimensional Rift"
+expect output value ): == 2
+log stage 7 - looting the boss corpse: a 12-yd grid at the boss's spawn height (z -24.6)
+do gm goto 12793.3 11943.0 -24.6
+wait 700ms
+do gm goto 12805.3 11943.0 -24.6
+wait 700ms
+do gm goto 12817.3 11943.0 -24.6
+wait 700ms
+do gm goto 12829.3 11943.0 -24.6
+wait 700ms
+do gm goto 12841.3 11943.0 -24.6
+wait 700ms
+do gm goto 12841.3 11955.0 -24.6
+wait 700ms
+do gm goto 12829.3 11955.0 -24.6
+wait 700ms
+do gm goto 12817.3 11955.0 -24.6
+wait 700ms
+do gm goto 12805.3 11955.0 -24.6
+wait 700ms
+do gm goto 12793.3 11955.0 -24.6
+wait 700ms
+do gm goto 12793.3 11967.0 -24.6
+wait 700ms
+do gm goto 12805.3 11967.0 -24.6
+wait 700ms
+do gm goto 12817.3 11967.0 -24.6
+wait 700ms
+do gm goto 12829.3 11967.0 -24.6
+wait 700ms
+do gm goto 12841.3 11967.0 -24.6
+wait 700ms
+do gm goto 12841.3 11979.0 -24.6
+wait 700ms
+do gm goto 12829.3 11979.0 -24.6
+wait 700ms
+do gm goto 12817.3 11979.0 -24.6
+wait 700ms
+do gm goto 12805.3 11979.0 -24.6
+wait 700ms
+do gm goto 12793.3 11979.0 -24.6
+wait 700ms
+do gm goto 12793.3 11991.0 -24.6
+wait 700ms
+do gm goto 12805.3 11991.0 -24.6
+wait 700ms
+do gm goto 12817.3 11991.0 -24.6
+wait 700ms
+do gm goto 12829.3 11991.0 -24.6
+wait 700ms
+do gm goto 12841.3 11991.0 -24.6
+wait 700ms
+expect gm item 250075 >= 100
+expect gm item 701008 >= 1
+log stage 8 - at the hub, 605 yd from the spawner, for 2000 s; the next Rift opens 30 min after the close
 place 727 13421.8 11926.1 -32.9
-log stage 6 - at the hub for 31 minutes, the next Rift opens meanwhile
-wait 1860s
+wait 2000s
 place 727 12817.3 11967.0 -34.0
-wait 5s
-log stage 7 - back at the spawner, a new Rift stands (see the Spawned rift line above)
+wait 3s
+log stage 9 - back at the spawner: a new Rift whose first wave already stands (opened while nobody was near)
+as gm .npc near 15
+expect output has "Dimensional Rift"
+as gm .mmap testarea
+expect output value Found == 12
 
 cleanup
 as gm .cheat god off
+do gm destroy 250075
+do gm destroy 701008
+do gm destroy 35584
+do gm destroy 35585
+do gm destroy 35588
+do gm destroy 35589
+do gm destroy 35594
+do gm destroy 35642
+do gm destroy 35646
+do gm destroy 41189
