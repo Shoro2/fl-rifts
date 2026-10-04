@@ -49,6 +49,17 @@ the migrated content uses different IDs.
 
 ## Verification state
 
+Fire support Flamewaker Zealot (80017) has a separate HP-only correction in
+`data/sql/db-world/updates/fl_rifts_fire_support_health.sql`. On the legacy FL
+template it reduces fresh-spawn HP from 214200 to 72658, matching the other
+three supports, while preserving exp, damage and abilities. The update also
+handles a fresh stock template without reducing its intended HP. The historical
+element base SQL is unchanged. Workbench run 322 of
+`tests/rift_fire_support_health.tbs` passed 21/0 on 2026-10-04, including all
+seven temporary-copy cleanup checks. This is T1 server evidence for fresh
+template HP, not a complete Rift combat or client test. Host rollout remains
+pending under MIG-069.
+
 The prior element/UI revision was built and deployed on the Windows operator
 box, and the compact top status bar is operator-confirmed in game. The current
 element-combat and Rift-visual C++ remain T0 until they are built. The

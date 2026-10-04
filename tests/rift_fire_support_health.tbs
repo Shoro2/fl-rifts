@@ -1,0 +1,74 @@
+# ONE health feature, NOT a Rift lifecycle/combat test. Run only after the
+# coordinator applies the HP-only SQL and grants the entry-specific cache reload.
+# Fresh map-35 instance; only temporary copies of the four Fire roles and
+# three support references. No persistent NPC spawn, actual Rift or config edit.
+# Expected HP assumes level 80 and the observed normal/elite HP rates of 1.
+name    Rifts - Fire support matches peer health without changing other Fire roles
+timeout 60s
+bot w warrior
+place 35 -46.262 177.5 -40.0506 4.72486
+do gm target gm
+require gm alive
+require gm map 35
+as gm .reload creature_template 80017
+
+# Create all fixtures before checking them. No attack/loot/equip action.
+as gm .npc add temp 80039
+pick fire_melee creature:80039
+as gm .npc add temp 80041
+pick fire_caster creature:80041
+as gm .npc add temp 80047
+pick fire_disruptor creature:80047
+as gm .npc add temp 80017
+pick fire_support creature:80017
+as gm .npc add temp 80035
+pick shadow_support creature:80035
+as gm .npc add temp 80046
+pick air_support creature:80046
+as gm .npc add temp 80175
+pick water_support creature:80175
+wait 1s
+
+expect fire_melee alive
+expect fire_melee maxhealth == 90814
+expect fire_caster alive
+expect fire_caster maxhealth == 63563
+expect fire_disruptor alive
+expect fire_disruptor maxhealth == 93475
+expect fire_support alive
+expect fire_support maxhealth == 72658
+expect fire_support maxhealth == maxhealth:shadow_support
+expect fire_support maxhealth == maxhealth:air_support
+expect fire_support maxhealth == maxhealth:water_support
+expect fire_support health == 100%
+log measured fresh template health; no claim about damage combat or a complete Rift wave
+
+cleanup
+# Every selected alias is a picked test-only temporary copy. .die removes
+# TEMPSUMMON_CORPSE_DESPAWN copies on their next update. If an add/pick failed,
+# cleanup records an error; it must never substitute an entry search or kill
+# nearby world creatures. The initial selection is the test director; later
+# selections are only owned fixtures. A missing alias cannot redirect a kill
+# to a world spawn. On fixture failure even cleanup is reported FAILED.
+do gm target fire_melee
+as gm .die
+do gm target fire_caster
+as gm .die
+do gm target fire_disruptor
+as gm .die
+do gm target fire_support
+as gm .die
+do gm target shadow_support
+as gm .die
+do gm target air_support
+as gm .die
+do gm target water_support
+as gm .die
+waitfor fire_melee missing timeout 3s
+waitfor fire_caster missing timeout 3s
+waitfor fire_disruptor missing timeout 3s
+waitfor fire_support missing timeout 3s
+waitfor shadow_support missing timeout 3s
+waitfor air_support missing timeout 3s
+waitfor water_support missing timeout 3s
+log rift_fire_support_health done

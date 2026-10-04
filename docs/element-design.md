@@ -45,6 +45,26 @@ shared archetype slot rather than retaining the weak FL placeholder values:
 | 4 · Support | 80035 | 17 | 15 |
 | Boss | 80036 | 47 | 19 |
 
+Fire support 80017 is the exception to copying the raw health modifier.
+Its legacy FL template retains exp=2, so class-2 level-80 base HP is 12600
+instead of the other supports' exp=0 base HP 4274. Modifier 17 therefore
+produced 214200 HP. `fl_rifts_fire_support_health.sql` changes only its
+HealthModifier to `17 * basehp0 / basehp[exp]`, guarded to level 80, class 2
+and exp 0 or 2. Legacy exp=2 becomes 5.766508102416992 and 72658 fresh-spawn
+HP; a fresh stock exp=0 template remains at modifier 17 and the same HP.
+Exp is preserved because it also selects base damage. All damage fields,
+abilities and the historical base SQL remain unchanged. The new updater sorts
+after elements and before rewards in the MODULE pass. Fresh-import behavior
+is source/arithmetic verified; no fresh-database run is claimed.
+
+Workbench run 322 (2026-10-04), `tests/rift_fire_support_health.tbs`, passed
+21/0: Fire support equalled Shadow/Air/Water support at 72658 HP; the other
+Fire roles remained 90814, 63563 and 93475 HP. All seven temporary copies
+disappeared in cleanup. The complete sixteen-template/base-stat/34-SmartAI
+before/after comparison changed only 80017 HealthModifier. This is T1 fresh
+template HP evidence, not a new damage-combat, full-wave or client test.
+Host rollout remains pending under MIG-069.
+
 Both boss variants of each new element use the original Shadow boss 80036 as
 their benchmark. Entry 80037 is not a tuning reference: it was an unrelated FL
 placeholder retrofitted as a second Shadow boss. Summoned mechanic helpers
@@ -200,6 +220,7 @@ name.
 | Air/Water GameObject Rift visuals | `src/FLRifts.cpp` + same SQL | ✅ T0 code / T1 SQL |
 | Trash + Support abilities via SmartAI | same SQL | ✅ runnable¹ |
 | Shadow-equivalent health/damage tuning | same SQL | ✅ T1 isolated-DB verified |
+| Fire support 80017 exp-aware HP correction | `data/sql/db-world/updates/fl_rifts_fire_support_health.sql` + `tests/rift_fire_support_health.tbs` | ✅ T1 workbench run 322, 21/0; host pending MIG-069 |
 | Entry map reconciled with live FL DB | SQL + conf + `FLRifts.cpp` defaults | ✅ code |
 | Previous element build (before this polish) | operator box | ✅ T1 clean |
 | Current balance/visual build | operator box | ⬜ pending (T0 code only) |

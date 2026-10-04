@@ -1,5 +1,20 @@
 # Change log
 
+- `fix(Rifts): Normalize Fire support health` - Flamewaker Zealot 80017
+  inherited exp=2, making the copied modifier 17 produce 214200 HP instead
+  of the other supports' 72658. New narrow exp0/2-aware SQL changes only its
+  HealthModifier, preserving exp, damage, abilities and the historical base
+  SQL. Stock-style exp=0 remains at modifier 17; that path is source/arithmetic
+  verified only. Root applied the guarded SQL on the Windows workbench and
+  reloaded only template 80017. Run 322 of the new bounded
+  `tests/rift_fire_support_health.tbs` passed 21/0 on 2026-10-04: fresh Fire
+  support equalled all three support peers at 72658 HP, the other Fire roles
+  remained 90814/63563/93475 HP, and all seven temporary copies disappeared.
+  Complete selected-row comparison changed only 80017 HealthModifier; no
+  active queue, online test bots, persistent spawns or test map-35 bindings
+  remained. T1 server HP evidence, not full Rift combat or client proof.
+  No build/restart/host action; production rollout is MIG-069 PENDING.
+
 - `docs(Rifts): Record the lifecycle bot pass` - T1 bot-verified on the
   workbench (worldserver b4fde7ad = fl-rifts b71422b, `fl_rifts_rewards.sql`
   applied): run 315 of `tests/rift_lifecycle.tbs` PASSED 16/0 in 2240 s on an

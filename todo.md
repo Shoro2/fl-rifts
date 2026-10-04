@@ -1,8 +1,11 @@
 # Open work
 
-- (high) Host rollout of the lifecycle/reward fixes (2026-10-03, workbench
-  bot-verified): rebuild + restart; the updater applies
-  `data/sql/db-world/updates/fl_rifts_rewards.sql`. Needs its MIG entry.
+- (high) Host rollout of the Fire support 80017 HP-only correction
+  (`data/sql/db-world/updates/fl_rifts_fire_support_health.sql`, MIG-069
+  PENDING). Workbench run 322 passed 21/0, including all seven temporary-copy
+  cleanup checks; fresh 80017 HP is 72658 and the other three Fire-role HP
+  values are unchanged. No production application or complete Rift combat
+  test is claimed.
 - (medium) Shadow boss 2 (80037, "Vorath, the Hollow King") is an untuned
   placeholder (rank 0, health/damage modifiers 1.5/2 against 47/19 for
   80036) and wins half of all Shadow Rifts; tune it or point
@@ -58,7 +61,10 @@
   two-caster ability cap.
 - (medium) Confirm Fire/Water/Air trash now survives and hits at the accepted
   Shadow-Rift level: slots 1-4 use health/damage modifiers 17/18, 17/15,
-  25/15 and 17/15; all six elemental bosses use 47/19.
+  25/15 and 17/15, with the exp-aware Fire support HP correction described in
+  `docs/element-design.md`; all six elemental bosses use 47/19. Fresh support
+  HP parity and the other three Fire-role HP values passed run 322; full
+  in-Rift combat remains owed.
 - (medium) QA the remaining placeholder displays on 80175/80176/80177 and the
   Protective Bubble `54306` flat-reduction behavior.
 - (low) Optional: recolor the AIO status bar per element (add an element field to
