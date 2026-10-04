@@ -1,18 +1,15 @@
 # Change log
 
-- `fix(Rifts): ground Ichyron before summoning` - Prepared T0 correction for
-  entry 80034 only: resolve map/VMAP/phase floor at the selected random X/Y
-  before summoning; reject missing or non-finite floor into the existing
-  five-second wave retry. Other bosses, death counting, close-on-death, corpse
-  lifetime and loot remain unchanged. Native workbench run 325 (23/0) proved
-  the old Ichyron origin 10.373795 yd above runtime floor. Run 326 retained
-  that height alive and after death, but its ordinary-player broker aborted
-  before melee/loot because Director GPS preceded teleport acknowledgement.
-  No build, deployment or functional PASS is claimed. Operator history says
-  the elevated placement was a former crash workaround; its suspected
-  under-world crash cause remains unproven. The targeted candidate acceptance
-  and host deployment remain pending; MIG-064 is preserved.
-
+- `docs(Rifts): Record accepted Ichyron loot` - 2026-10-04: source bda3b1e
+  is locally merged and incrementally built; native runs 327/328 confirm the
+  same boss/corpse on actual floor, a normal bot kill and Rift closure without
+  server interruption. Overall scripts remain FAIL 25/1 and 20/1 on GPS label
+  parsing and optional Taunt; ordinary broker aborted before client hit/loot
+  after actual combat displacement. Operator now explicitly confirms in-game
+  loot (T2 user-reported) and authorizes merge. Close local acceptance without
+  fabricating an automated melee PASS or repeating tests. No C++/SQL/client
+  change, rebuild, restart or host action in this documentation update.
+  Source publication and approved combined host rollout remain MIG-072 pending.
 
 - `fix(Rifts): Normalize Fire support health` - Flamewaker Zealot 80017
   inherited exp=2, making the copied modifier 17 produce 214200 HP instead

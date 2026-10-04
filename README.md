@@ -72,12 +72,16 @@ evidence.
 
 ## Ichyron ground placement
 
-The Ichyron ground-placement correction is prepared at T0, not built or
-deployed. Native workbench run 325 proved the old spawn at Z -24.625198 above
-runtime floor -34.998993 (10.373795 yd). Run 326 retained that height alive and
-after death, but the ordinary-player broker aborted on a stale Director
-position read immediately after an asynchronous teleport. Ground melee and
-ordinary corpse loot were therefore not measured. The same targeted candidate
-pass still owes native ground placement, server stability, ordinary-player
-melee damage, a normal damaging kill and manually taken non-token corpse loot.
+The Ichyron 80034 correction is integrated locally in source `bda3b1e` and
+built incrementally. Native runs 327/328 prove the same boss and corpse on the
+actual floor, a normal bot kill, Rift closure and server survival. Both overall
+test scenarios failed on test-only checks; the ordinary-client broker aborted
+before recording its melee or loot. Those are retained as historical results.
+
+On 2026-10-04 the operator explicitly confirmed in-game Ichyron loot and
+authorized merge (T2 user-reported loot evidence). The fix is accepted for the
+combined batch; no further local acceptance test is required by the operator.
+Automated ordinary-client melee remains unproven, not relabeled as a PASS.
+No further code/build/cache/client change is needed for this acceptance record.
+Production rollout and source publication remain pending under MIG-072.
 MIG-064 lifecycle/loot evidence remains valid for its original scope.
