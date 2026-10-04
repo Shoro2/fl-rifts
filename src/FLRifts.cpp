@@ -18,6 +18,7 @@
 #include "WorldPacket.h"
 #include "WorldSession.h"
 
+#include <cmath>
 #include <mutex>
 #include <string>
 #include <unordered_set>
@@ -521,12 +522,32 @@ public:
                     return false;
             }
 
-            Creature* boss = me->SummonCreature(
-                bossEntry,
-                me->GetPositionX() + frand(-20.0f, 20.0f),
-                me->GetPositionY() + frand(-20.0f, 20.0f),
-                me->GetPositionZ() + 5.0f, me->GetOrientation(),
-                TEMPSUMMON_MANUAL_DESPAWN);
+            Creature* boss = nullptr;
+            if (bossEntry == 80034) // Ichyron is a ground boss.
+            {
+                float summonX = me->GetPositionX() + frand(-20.0f, 20.0f);
+                float summonY = me->GetPositionY() + frand(-20.0f, 20.0f);
+                float summonZ = me->GetPositionZ() + 5.0f;
+                float floorZ = me->GetMapHeight(summonX, summonY, summonZ);
+                if (!std::isfinite(floorZ) || floorZ <= INVALID_HEIGHT)
+                {
+                    LOG_ERROR("module.fl-rifts",
+                        "No ground for Ichyron at {} {} {} on map {}; "
+                        "retrying the boss wave.", summonX, summonY,
+                        summonZ, me->GetMapId());
+                    return false;
+                }
+                boss = me->SummonCreature(
+                    bossEntry, summonX, summonY, floorZ, me->GetOrientation(),
+                    TEMPSUMMON_MANUAL_DESPAWN);
+            }
+            else
+                boss = me->SummonCreature(
+                    bossEntry,
+                    me->GetPositionX() + frand(-20.0f, 20.0f),
+                    me->GetPositionY() + frand(-20.0f, 20.0f),
+                    me->GetPositionZ() + 5.0f, me->GetOrientation(),
+                    TEMPSUMMON_MANUAL_DESPAWN);
             if (!boss)
                 return false;
 

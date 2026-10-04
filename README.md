@@ -69,3 +69,15 @@ not been applied to the live DB. Rift lifecycle checks plus the Air/Water
 GameObject appearance, tuned names, stats, scales, mana roles, hazards and boss
 mechanics still require an in-game pass. See `todo.md` for the exact outstanding
 evidence.
+
+## Ichyron ground placement
+
+The Ichyron ground-placement correction is prepared at T0, not built or
+deployed. Native workbench run 325 proved the old spawn at Z -24.625198 above
+runtime floor -34.998993 (10.373795 yd). Run 326 retained that height alive and
+after death, but the ordinary-player broker aborted on a stale Director
+position read immediately after an asynchronous teleport. Ground melee and
+ordinary corpse loot were therefore not measured. The same targeted candidate
+pass still owes native ground placement, server stability, ordinary-player
+melee damage, a normal damaging kill and manually taken non-token corpse loot.
+MIG-064 lifecycle/loot evidence remains valid for its original scope.

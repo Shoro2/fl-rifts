@@ -1,5 +1,19 @@
 # Change log
 
+- `fix(Rifts): ground Ichyron before summoning` - Prepared T0 correction for
+  entry 80034 only: resolve map/VMAP/phase floor at the selected random X/Y
+  before summoning; reject missing or non-finite floor into the existing
+  five-second wave retry. Other bosses, death counting, close-on-death, corpse
+  lifetime and loot remain unchanged. Native workbench run 325 (23/0) proved
+  the old Ichyron origin 10.373795 yd above runtime floor. Run 326 retained
+  that height alive and after death, but its ordinary-player broker aborted
+  before melee/loot because Director GPS preceded teleport acknowledgement.
+  No build, deployment or functional PASS is claimed. Operator history says
+  the elevated placement was a former crash workaround; its suspected
+  under-world crash cause remains unproven. The targeted candidate acceptance
+  and host deployment remain pending; MIG-064 is preserved.
+
+
 - `fix(Rifts): Normalize Fire support health` - Flamewaker Zealot 80017
   inherited exp=2, making the copied modifier 17 produce 214200 HP instead
   of the other supports' 72658. New narrow exp0/2-aware SQL changes only its

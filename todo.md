@@ -1,5 +1,11 @@
 # Open work
 
+- (high) Verify the Ichyron80034 grounded-spawn fix with native floor/server
+  stability, normal ground melee and a damaging kill/manual non-token loot.
+  Baseline325 proves old elevation; observer326 aborted before melee/loot.
+  MIG-072 pending approved end-of-round host batch; no candidate runtime
+  acceptance claimed.
+
 - (high) Host rollout of the Fire support 80017 HP-only correction
   (`data/sql/db-world/updates/fl_rifts_fire_support_health.sql`, MIG-069
   PENDING). Workbench run 322 passed 21/0, including all seven temporary-copy
