@@ -1,16 +1,9 @@
 # Open work
 
-- (high) Include the accepted Ichyron 80034 ground-placement fix in the
-  approved combined host batch (MIG-072). Operator confirmed loot and approved
-  merge on 2026-10-04; local source is already integrated and built. Publish
-  final reviewed source with the batch; preserve all recorded test limitations.
-
-- (high) Host rollout of the Fire support 80017 HP-only correction
-  (`data/sql/db-world/updates/fl_rifts_fire_support_health.sql`, MIG-069
-  PENDING). Workbench run 322 passed 21/0, including all seven temporary-copy
-  cleanup checks; fresh 80017 HP is 72658 and the other three Fire-role HP
-  values are unchanged. No production application or complete Rift combat
-  test is claimed.
+- (medium) Testers' re-check of a Rift on the host: it closes on the boss kill,
+  pays loot, and the next Rift opens 30 minutes later with nobody near. Live
+  there since HOST-4 (MIG-064); owed per the queue row "fl-rifts — live on the
+  host since HOST-4" (share-public `docs/World of Warcraft/12-server-todo.md`).
 - (medium) Shadow boss 2 (80037, "Vorath, the Hollow King") is an untuned
   placeholder (rank 0, health/damage modifiers 1.5/2 against 47/19 for
   80036) and wins half of all Shadow Rifts; tune it or point
@@ -18,36 +11,44 @@
 - (medium) Element trash (80031-80033, 80039, 80041, 80043-80047) and every
   boss have `detection_range` 1, so they aggro only within the 5-yd floor of
   `Creature::GetAggroRange` (Shadow trash: 15).
+- (medium) The FL DB swaps the Rift subnames: 90014 (the Water Rift in
+  `FLRifts.cpp`) shows "Air", 90015 (Air) shows "Water" (queue row above;
+  workbench DB checked 2026-10-09). Set them in the module SQL.
+- (medium) Every boss except Ichyron is summoned at the Rift's Z+5, i.e. 10 yd
+  above the spawner (queue row above); Ichyron got ground placement in
+  `bda3b1e`. Decide whether the other bosses get the same.
 - (low) A Rift that leaves the world without `UnSummon` (e.g. `.npc delete`)
   never reaches the spawner's `SummonedCreatureDespawn`, leaving the event
   Active without a Rift until a restart; the spawner could re-check
   `riftState.RiftGuid` in `UpdateAI`.
 - (high) Verify in game that the native POI appears for players already in the
   zone, appears for late entrants, and disappears on leave/clear.
-- (high) Run `/aio reset`, then verify the compact two-minute countdown, its
-  saved right-button drag position, and the first trash spawn at expiry.
+- (high) Run `/aio reset`, then verify the compact two-minute countdown and its
+  saved right-button drag position (the first trash spawn at expiry is
+  bot-verified, `tests/rift_lifecycle.tbs` run 315).
 - (medium) With a real client, follow one Rift through both trash waves and
   the boss and confirm the live wave/enemy counts and that marker and UI
   clear for every player in the zone (the server side - waves, close on the
   boss kill, loot, next Rift - is bot-verified by `tests/rift_lifecycle.tbs`).
-- (medium) Validate the Linux `bin/lua_scripts/FLRifts` install path when the
-  future server host receives its first deployment.
+- (medium) Confirm on the host that `bin/lua_scripts/FLRifts` matches `lua/`.
+  The host's `lua_scripts` is the fl-lua-scripts checkout, which carries its own
+  copy in `FLRifts/`; no record of this check in the vault.
+- (low) README "Verification state" and "Ichyron ground placement" and the
+  status table in `docs/element-design.md` still call MIG-069/MIG-072, the
+  current build and the element SQL apply pending; all are done (workbench
+  updater rows; host HOST-6, 2026-10-04). The README also promises native
+  area-trigger countdown announcements (2:00 ... last 5 s) that no code in
+  `src/` sends; drop the line or add the announcements.
+- (low) Before any `MapUpdate.Threads` > 1 experiment, re-check the file-scope
+  Rift globals (one recursive mutex), as share-public
+  `forgotten-land/10-mass-pull-performance-plan.md` §5.3 asks.
+- (low) (suggestion) Clear the legacy ScriptName `FLRiftsCreatureTrash` that
+  the FL DB still carries on Shadow trash 80027-80029/80035; no code registers
+  it since `6b68a43`, their SmartAI runs. (The non-Rift NPCs 80010 and 80030
+  carry it too; they are FL world content, not this module's.)
 
 ## Element content (Fire / Water / Air)
 
-- (done) Entry map reconciled with the live FL DB — element content reuses and
-  renames the FL `[PH] <element> Rift monster/boss` placeholders; four new
-  creatures (Water support 80175, globule 80176, tornado 80177, Flame Strike
-  trap 80178). See
-  `docs/element-design.md` "Entry map — reconciled". Real NPCs (Yorg Stormheart
-  80050, Nil'un 80030, Arcane Magical Anomaly 80051) are untouched.
-- (done, prior revision T1) Build worldserver (MSVC RelWithDebInfo,
-  `dcore_bin`) — clean before the current combat-polish changes.
-- (high) Build the current `claude/balance-rift-creatures-019f74ad` branch and
-  run the module/Core codestyle checks.
-- (high) Apply `data/sql/db-world/base/fl_rifts_elements.sql` to the live
-  `acore_world`, boot worldserver, and confirm `Errors.log` stays at the 7-line
-  baseline (no "not assigned" / creature_template errors).
 - (high) Test each element in game: spawner opens Fire/Air/Water rifts, trash
   casts its element spells, the two bosses per element run their rotation, and
   each signature fires (Fire boss 1 Scorched Ground 62548 visibly damages and
