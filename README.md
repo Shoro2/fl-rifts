@@ -1,87 +1,74 @@
-# Forgotten Land Rifts
+# fl-rifts (Forgotten Land Rifts)
 
-`fl-rifts` runs a repeating world Rift event. A randomly selected Rift spawn
-location creates a visible Rift, waits two minutes, then starts two trash waves
-and a boss wave. The next Rift becomes eligible 30 minutes after the event is
-cleared.
+An AzerothCore module that runs a repeating world event: a Rift opens at a spawn point, counts down, sends waves of
+elemental monsters and finally a boss. Part of the Forgotten Land server project.
 
-## Player experience
+## Features
 
-- Players in the Rift's zone receive a small native map point of interest.
-- Players who enter the zone while the Rift is present receive the same marker.
-- The marker is cleared when the player leaves or the Rift is completed.
-- The first wave cannot spawn until the two-minute pre-start phase expires.
-- AIO renders a compact top-center status bar. Hold the right mouse button to
-  move it; AIO saves the position.
-- During the pre-start phase the bar shows the countdown. Once the event is
-  active it shows the current trash/boss wave and remaining enemies.
-- Native area-trigger announcements at 2:00, 1:00, 0:30, 0:10, and the final
-  five seconds remain as a fallback.
-- Air and Water Rifts render as their configured portal GameObjects while an
-  invisible creature controller continues to own the event and its lifecycle.
-- A wave creature counts as defeated the moment it dies: the Rift closes as the
-  boss dies, and the corpses stay lootable (trash for one minute, the boss for
-  its corpse decay). Every element pays the Shadow Rift loot (trash 90001,
-  bosses 90002 - `data/sql/db-world/updates/fl_rifts_rewards.sql`).
-- The spawner is an active object, so the event runs - and the next Rift opens
-  30 minutes after a close - whether or not anyone is near the spawner.
+- A random Rift spawn location is chosen, a Rift appears and, after a two-minute countdown, two trash waves of ten
+  creatures and one boss wave attack. The Rift closes when the boss dies; the next Rift opens 30 minutes later,
+  whether or not any player is near the spawner.
+- Four elements (Shadow, Fire, Water, Air). Each Rift picks a random eligible element, with its own four trash types,
+  two possible bosses and a boss mechanic (for example Scorched Ground and Flame Strike traps for Fire, tornadoes for
+  Air, healing globules for Water). Air and Water Rifts show as portal gameobjects.
+- Players in the Rift's zone get a native map marker ("Active Rift") that disappears when they leave or the Rift ends.
+- A compact status bar at the top centre of the screen shows the countdown, then the current wave and the number of
+  enemies left. Hold the right mouse button to move it; the position is saved. Area announcements at 2:00, 1:00, 0:30,
+  0:10 and the last seconds act as a fallback.
+- Wave creatures count as defeated the moment they die, so corpses stay lootable after the Rift closes.
+- Fire support creature 80017 gets its health aligned with the other three supports
+  (`data/sql/db-world/updates/fl_rifts_fire_support_health.sql`).
 
-## Runtime dependencies
+## Requirements
 
-- AzerothCore built with this module enabled.
-- `mod-ale` plus the AIO server/client framework for the countdown bar.
-- The Rift creature templates and spawn locations from the Forgotten Land
-  content migration.
+- AzerothCore (WotLK 3.3.5a), current master. No extra core patches are needed.
+- For the status bar: [mod-ale](https://github.com/azerothcore/mod-ale) (the AzerothCore Lua Engine) with the AIO
+  framework. Without them the Rifts still run; players only miss the status bar.
+- Loot: the rewards script (`data/sql/db-world/updates/fl_rifts_rewards.sql`) points the Rift monsters at loot tables
+  90001 (trash) and 90002 (bosses) from the Forgotten Land database. Those tables are not part of this repository and
+  the script only takes effect when they exist, so create your own tables with these ids (or set `lootid` of the Rift
+  creatures yourself) if you want the monsters to drop something.
 
-When `mod-ale` is present, `fl-rifts.cmake` copies `lua/` into
-`lua_scripts/FLRifts` during the module build/install. After changing the AIO
-client file, run `/aio reset` on the test client before verification.
+## Installation
 
-The current Windows test server installs the directory directly below the
-install prefix. The future Linux host follows the AzerothCore layout below
-`<install-prefix>/bin/lua_scripts/FLRifts`.
+1. Clone into the `modules/` folder of your AzerothCore source tree:
+   ```
+   cd azerothcore-wotlk/modules
+   git clone https://github.com/Shoro2/fl-rifts.git
+   ```
+2. Re-run CMake and rebuild the worldserver. When mod-ale is present, the build copies `lua/` to
+   `lua_scripts/FLRifts` (in the build `bin` folder and, on install, below `<install-prefix>/bin/lua_scripts/FLRifts`).
+   Make sure that folder ends up in the `lua_scripts` directory your worldserver loads.
+3. Copy `conf/fl-rifts.conf.dist` to `fl-rifts.conf` in the folder of your `worldserver.conf` and set
+   `FLRifts.Enable = 1` (the event is off by default).
+4. Start the worldserver. The AzerothCore updater imports `data/sql/db-world/` (element creatures, scripts and AI;
+   it also works on a stock database, where missing placeholder creatures are created as stubs). The `sql/` folders are
+   empty legacy skeleton files and are not used.
+5. Spawn at least one Rift spawn location (see Usage). After changing the AIO client file, run `/aio reset` in the
+   client.
 
 ## Configuration
 
-Copy `conf/fl-rifts.conf.dist` to the runtime module config directory, enable
-`FLRifts.Enable`, and adjust the configured wave/boss creature entries only if
-the migrated content uses different IDs.
+`conf/fl-rifts.conf.dist`:
 
-## Verification state
+| Key | Default | Meaning |
+|---|---|---|
+| `FLRifts.Enable` | 0 | enable the Rift event |
+| `FLRifts.Element.Shadow / Fire / Air / Water` | 1 | whether the element may be picked for a new Rift (if none is enabled, Shadow is used) |
+| `FLRifts.<element>1` - `<element>4` | see file | creature entries of the four trash types (melee bruiser, caster, disruptor, support) |
+| `FLRifts.<element>boss1`, `<element>boss2` | see file | the two possible bosses; one is picked per event |
 
-Fire support Flamewaker Zealot (80017) has a separate HP-only correction in
-`data/sql/db-world/updates/fl_rifts_fire_support_health.sql`. On the legacy FL
-template it reduces fresh-spawn HP from 214200 to 72658, matching the other
-three supports, while preserving exp, damage and abilities. The update also
-handles a fresh stock template without reducing its intended HP. The historical
-element base SQL is unchanged. Workbench run 322 of
-`tests/rift_fire_support_health.tbs` passed 21/0 on 2026-10-04, including all
-seven temporary-copy cleanup checks. This is T1 server evidence for fresh
-template HP, not a complete Rift combat or client test. Host rollout remains
-pending under MIG-069.
+Changed entries apply to the next summon after a config reload.
 
-The prior element/UI revision was built and deployed on the Windows operator
-box, and the compact top status bar is operator-confirmed in game. The current
-element-combat and Rift-visual C++ remain T0 until they are built. The
-Shadow-equivalent creature tuning is T1 database-verified in isolated live-data
-and stock-style schemas, but `data/sql/db-world/base/fl_rifts_elements.sql` has
-not been applied to the live DB. Rift lifecycle checks plus the Air/Water
-GameObject appearance, tuned names, stats, scales, mana roles, hazards and boss
-mechanics still require an in-game pass. See `todo.md` for the exact outstanding
-evidence.
+## Usage
 
-## Ichyron ground placement
+- Rift spawn locations are creatures with entry **90018** ("Rift Spawn Location"). Place one or more with a GM account,
+  e.g. `.npc add 90018`; each new Rift opens at a random one of the loaded spawners on its map. The Rift controllers
+  (entries 90014 Water, 90015 Air, 90016 Fire, 90017 Shadow) are summoned by the spawner and need no spawn.
+- Players see the world text "A new Rift has formed. Its invasion begins in two minutes!", the map marker and the status
+  bar. Kill all waves and the boss to close the Rift.
+- `tests/` contains scenarios for the `mod-fl-testbots` bot runner; they are not needed to use the module.
 
-The Ichyron 80034 correction is integrated locally in source `bda3b1e` and
-built incrementally. Native runs 327/328 prove the same boss and corpse on the
-actual floor, a normal bot kill, Rift closure and server survival. Both overall
-test scenarios failed on test-only checks; the ordinary-client broker aborted
-before recording its melee or loot. Those are retained as historical results.
+## License
 
-On 2026-10-04 the operator explicitly confirmed in-game Ichyron loot and
-authorized merge (T2 user-reported loot evidence). The fix is accepted for the
-combined batch; no further local acceptance test is required by the operator.
-Automated ordinary-client melee remains unproven, not relabeled as a PASS.
-No further code/build/cache/client change is needed for this acceptance record.
-Production rollout and source publication remain pending under MIG-072.
-MIG-064 lifecycle/loot evidence remains valid for its original scope.
+See the `LICENSE` file (MIT).

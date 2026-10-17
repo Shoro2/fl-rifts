@@ -1,11 +1,17 @@
 # fl-rifts
 
+> **Internal docs live in the vault, not here** (rule since 2026-10-18: this public repo keeps only
+> README.md with the general info and installation, this CLAUDE.md, the license and the code).
+> Index, data structure, functions, log and todo: share-public `docs/World of Warcraft/module-repos/fl-rifts/`
+> (local checkout `C:\Users\Anwender\Documents\GitHub\share-public`). Update them there,
+> in a vault worktree, in the same session as the code change.
+
 Forgotten Land's repeating world event. A Rift opens at the Rift spawner on the hub map 727,
 counts down two minutes, sends two trash waves of 10 and then one boss, closes on the boss kill
 and opens again 30 minutes later. Each Rift is one of four elements (Shadow, Fire, Water, Air)
 with its own trash, two possible bosses and a boss mechanic. Players get a map marker, a
 top-centre AIO status bar (countdown, wave, enemies left) and the Shadow Rift loot.
-Full description: [README.md](README.md); element design: [docs/element-design.md](docs/element-design.md).
+Full description: [README.md](README.md); element design: [docs/element-design.md](https://github.com/Shoro2/share-public/blob/main/docs/World%20of%20Warcraft/module-repos/fl-rifts/element-design.md).
 
 ## Ids and tables
 
@@ -61,7 +67,7 @@ tunes and binds. Spells are stock 3.3.5a ids; no custom DBC.
 5. Bring README "Verification state" / "Ichyron ground placement" and the element-design status
    table up to date with HOST-6 (todo).
 
-Open points in full: [todo.md](todo.md).
+Open points in full: [todo.md](https://github.com/Shoro2/share-public/blob/main/docs/World%20of%20Warcraft/module-repos/fl-rifts/todo.md).
 
 ## Working here
 
@@ -80,5 +86,5 @@ Open points in full: [todo.md](todo.md).
   `docs/World of Warcraft/forgotten-land/15-host-migration-log.md`.
 - Vault: `docs/World of Warcraft/forgotten-land/06-fl-modules.md`, `12-server-todo.md`,
   `forgotten-land/15-host-migration-log.md` (MIG-064, MIG-069, MIG-072), `testing/01-test-bots.md`.
-- Doc set: [INDEX.md](INDEX.md), CLAUDE.md, [data_structure.md](data_structure.md),
-  [functions.md](functions.md), [log.md](log.md) (newest first), [todo.md](todo.md).
+- Doc set: [INDEX.md](https://github.com/Shoro2/share-public/blob/main/docs/World%20of%20Warcraft/module-repos/fl-rifts/00-index.md), CLAUDE.md, [data_structure.md](https://github.com/Shoro2/share-public/blob/main/docs/World%20of%20Warcraft/module-repos/fl-rifts/data_structure.md),
+  [functions.md](https://github.com/Shoro2/share-public/blob/main/docs/World%20of%20Warcraft/module-repos/fl-rifts/functions.md), [log.md](https://github.com/Shoro2/share-public/blob/main/docs/World%20of%20Warcraft/module-repos/fl-rifts/log.md) (newest first), [todo.md](https://github.com/Shoro2/share-public/blob/main/docs/World%20of%20Warcraft/module-repos/fl-rifts/todo.md).
